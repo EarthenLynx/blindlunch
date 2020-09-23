@@ -1,34 +1,33 @@
 // Initialize the base modules
-const express = require("express");
-const path = require("path");
+const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose');
+require('dotenv').config()
 
 // Initialize the routes and the application
-const routerTodo = require("./routes/api/todo");
+const routerCode = require('./routes/api/code');
+const routerAuth = require('./routes/api/auth');
+const routerUser = require('./routes/api/user');
 const app = express();
 
 // Initialize the middleware
 app.use(express.json());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static(path.join(__dirname, "public")));
-
-// Configure View Engine
-var exphbs  = require('express-handlebars');
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Configure the routes
-app.use("/todo", routerTodo);
+app.use('/code', routerCode);
+app.use('/auth', routerAuth);
+app.use('/user', routerUser);
 
-// Configure the route rendering
-app.get('/', (req, res) => {
-  res.render('home');
-});
+// Connect to the database
+mongoose.connect(process.env.DB_HOST_ADMIN)
 
 // Configure the port. Uses standard node port, alternatively 3000 if not available
-app.set("port", process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3000);
 
 // Make the app listen to the standard port
-app.listen(app.get("port"), () =>
-  console.log("App listening on port " + app.get("port"))
+app.listen(app.get('port'), () =>
+  console.log('App listening on port ' + app.get('port'))
 );
