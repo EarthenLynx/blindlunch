@@ -67,11 +67,48 @@ const handleGetUserList = (req, res) => {
     if(err) {
       res.status(500).send({ status: 'server-error', msg: 'Could not fetch users from database', err })
     } else if(doc === null) {
-      res.status(404).send({ status: 'server-error', msg: 'No users found.', err })
+      res.status(404).send({ status: 'not-found', msg: 'No users found.', err })
     } else {
       res.status(200).send({ status: 'success', msg: `Fetched ${doc.length} users from database`, doc })
     }
   })
 }
 
-module.exports = { handleCreateUser, handleGetUserList }
+const handleGetUserById = (req, res) => {
+  // Check if a parameter is passed
+  if (!req.query.id) {
+    res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: id' })
+  } else {
+    const id = req.query.id;
+    UserSchema.findOne({id}, (err, doc) => {
+      if(err) {
+        res.status(500).send({ status: 'server-error', msg: 'Could not fetch user from database', err })
+      } else if(!doc) {
+        res.status(404).send({ status: 'not-found', msg: `No user found with id ${id}.`, err })
+      } else {
+        res.status(200).send({ status: 'success', msg: `User with id ${id} found`, doc })
+      }
+    })
+  }
+}
+
+const handleGetUsersByRole = (req, res) => {
+  // Check if a parameter is passed
+  if (!req.query.role) {
+    res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: role' })
+  } else {
+    const role = req.query.role;
+    console.log(role)
+    UserSchema.find({'roles.name': role}, (err, doc) => {
+      if(err) {
+        res.status(500).send({ status: 'server-error', msg: 'Could not fetch user from database', err })
+      } else if(!doc) {
+        res.status(404).send({ status: 'not-found', msg: `No user found with role ${role}.`, err })
+      } else {
+        res.status(200).send({ status: 'success', msg: `${doc.length} user with role ${role} found`, doc })
+      }
+    })
+  }
+}
+
+module.exports = { handleCreateUser, handleGetUserList, handleGetUserById, handleGetUsersByRole }

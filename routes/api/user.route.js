@@ -3,15 +3,24 @@ const express = require("express");
 const { 
   handleGetUserList, 
   handleCreateUser, 
-  // handleGetUserbyId, 
+  handleGetUserById, 
+  handleGetUsersByRole,
   // handleUpdateUserById
  } = require("../../controller/user.controller")
 
 // Setup the router
 var router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/all', (req, res) => {
   handleGetUserList(req, res);
+})
+
+router.get('/byId', (req, res) => {
+  handleGetUserById(req, res);
+})
+
+router.get('/byRole', (req, res) => {
+  handleGetUsersByRole(req, res);
 })
 
 router.post("/create", (req, res) => {
