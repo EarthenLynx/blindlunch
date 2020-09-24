@@ -6,9 +6,10 @@ const mongoose = require('mongoose');
 require('dotenv').config()
 
 // Initialize the routes and the application
-const routerCode = require('./routes/api/code');
-const routerAuth = require('./routes/api/auth');
-const routerUser = require('./routes/api/user');
+const routerCode = require('./routes/api/code.route');
+const routerAuth = require('./routes/api/auth.route');
+const routerUser = require('./routes/api/user.route');
+const routerRoles = require('./routes/api/roles.route')
 const app = express();
 
 // Initialize the middleware
@@ -17,9 +18,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Configure the routes
-app.use('/code', routerCode);
-app.use('/auth', routerAuth);
-app.use('/user', routerUser);
+app.use('/api/code', routerCode);
+app.use('/api/auth', routerAuth);
+app.use('/api/user', routerUser);
+app.use('/api/roles', routerRoles);
+
 
 // Connect to the database
 mongoose.connect(process.env.DB_HOST_ADMIN)
