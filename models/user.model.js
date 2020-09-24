@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const moment = require("moment")
-const crs = require('crypto-random-string');
 
 const UserSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
@@ -12,14 +10,4 @@ const UserSchema = new mongoose.Schema({
   lastLogin: { type: Date }
 });
 
-// Pre hooks
-UserSchema.pre('save', (next) => {
-  const now = moment();
-
-  if (!this.id) this.id = crs({ length: 25, type: 'url-safe' });
-  if (!this.registered) this.registered = now;
-  this.lastLogin = now;
-  next();
-})
-
-module.exports = UserSchema;
+module.exports = mongoose.model('UserSchema', UserSchema);
