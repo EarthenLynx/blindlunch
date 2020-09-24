@@ -5,7 +5,7 @@ const UserSchema = require("../models/user.model");
 const AuthSchema = require("../models/auth.model");
 const RolesSchema = require("../models/roles.model");
 
-const handleCreateUser = (req, res, next) => {
+const handleCreateUser = (req, res) => {
 
   // Check if body is non - empty
   if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
@@ -62,4 +62,16 @@ const handleCreateUser = (req, res, next) => {
   }
 }
 
-module.exports = { handleCreateUser }
+const handleGetUserList = (req, res) => {
+  UserSchema.find({}, (err, doc) => {
+    if(err) {
+      res.status(500).send({ status: 'server-error', msg: 'Could not fetch users from database', err })
+    } else if(doc === null) {
+      res.status(404).send({ status: 'server-error', msg: 'No users found.', err })
+    } else {
+      res.status(200).send({ status: 'success', msg: `Fetched ${doc.length} users from database`, doc })
+    }
+  })
+}
+
+module.exports = { handleCreateUser, handleGetUserList }

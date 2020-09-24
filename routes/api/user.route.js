@@ -1,7 +1,7 @@
 // Import needed modules
 const express = require("express");
 const { 
-  // handleGetUserList, 
+  handleGetUserList, 
   handleCreateUser, 
   // handleGetUserbyId, 
   // handleUpdateUserById
@@ -10,12 +10,16 @@ const {
 // Setup the router
 var router = express.Router();
 
-router.post("/create", (req, res, next) => {
-  handleCreateUser(req, res, next);
+router.get('/', (req, res) => {
+  handleGetUserList(req, res);
+})
+
+router.post("/create", (req, res) => {
+  handleCreateUser(req, res);
 });
 
-// router.put("/:id", (req, res, next) => {
-//   handleUpdateUserById(req, res, next);
+// router.put("/:id", (req, res) => {
+//   handleUpdateUserById(req, res);
 // })
 
 module.exports = router;
