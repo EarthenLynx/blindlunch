@@ -28,19 +28,14 @@ const handleCreateUser = (req, res, next) => {
 
     // Check if a user exists before saving
     AuthSchema.findOne({ username }, (err, doc) => {
-      if (err) {
-        res.status(500).send({ status: 'server-error', msg: 'Could not connect to database', err })
-      } else if (doc && doc.username === username) {
-        res.status(400).send({ status: 'client-error', msg: `The username ${username} already exists, please choose another`, err })
-      }
+      if (err) { res.status(500).send({ status: 'server-error', msg: 'Could not connect to database', err }) } 
+      else if (doc && doc.username === username) { res.status(400).send({ status: 'client-error', msg: `The username ${username} already exists, please choose another`, err })}
       // If user doesn't exists, create a new one and save it to database
       else {
         role.find({ name: 'guest' }, (err, doc) => {
-          if (err) {
-            res.status(500).send({ status: 'server-error', msg: 'Could not find a fitting role for you', err })
-          } 
-          
-          // If guestrole is found, continue
+          if (err) { res.status(500).send({ status: 'server-error', msg: 'Could not find a fitting role for you', err }) }
+
+          // If guestrole is found, continue and create new user
           else {
             const auth = new AuthSchema({ username, password: hash })
             const user = new UserSchema({ id, username, password, email, roles: [...doc], codeIds, registered, lastLogin })
