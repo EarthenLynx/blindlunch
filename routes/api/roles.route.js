@@ -4,7 +4,7 @@ const {
   // handleGetCode,
   handleCreateRole,
   // handleGetCodeById,
-  // handleDeleteCodeById,
+  handleDeleteRoleById,
   // handleUpdateCodeById 
 } = require("../../controller/roles.controller");
 
@@ -19,12 +19,10 @@ router.post("/", (req, res) => {
   handleCreateRole(req, res);
 })
 
-// router.delete("/:id", (req, res) => {
-//   handleDeleteCodeById(req, res);
-// })
+router.delete("/", (req, res) => {
+  handleDeleteRoleById(req, res);
+})
 
-// router.put("/:id", (req, res) => {
-//   handleUpdateCodeById(req, res);
-// })
+
 
 module.exports = router;
