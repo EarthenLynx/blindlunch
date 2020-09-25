@@ -12,7 +12,7 @@ router.post("/authenticate", (req, res) => {
   handleAuthenticate(req, res);
 });
 
-router.post('/login', (req, res) => {
+router.get('/login', (req, res) => {
   handleLogin(req, res)
 })
 

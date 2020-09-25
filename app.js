@@ -1,6 +1,7 @@
 // Initialize the base modules
 const express = require('express');
 const path = require('path');
+const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
 require('dotenv').config()
@@ -14,6 +15,7 @@ const app = express();
 
 // Initialize the middleware
 app.use(express.json());
+app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 

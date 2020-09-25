@@ -2,6 +2,7 @@ const crs = require("crypto-random-string");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const AuthSchema = require("../models/auth.model");
+const UserSchema = require("../models/user.model");
 
 const handleAuthenticate = (req, res) => {
 
@@ -33,8 +34,7 @@ const handleAuthenticate = (req, res) => {
             const authValue = crs({ length: 25, type: 'base64' });
 
             // Save it in the process
-            process.env.AUTH_KEY = authKey;
-            process.env.AUTH_VALUE = authValue;
+            process.env[authKey] = authValue;
 
             // Create the JWT config and content
             const jwtPayload = { authKey, authValue }
@@ -60,9 +60,54 @@ const handleAuthenticate = (req, res) => {
       }
     })
   }
-  // TODO: Continue here 
-  console.log(req.body)
-  console.log('Received POST request on auth route');
 }
 
-module.exports = { handleAuthenticate };
+const handleLogin = (req, res) => {
+  console.log('Hit login route');
+  const jwtName = process.env.AUTH_TOKEN_NAME;
+  const jwtSignature = process.env.AUTH_SECRET;
+  const token = req.cookies[jwtName]
+
+
+  jwt.verify(token, jwtSignature, (err, payload) => {
+    const { authKey, authValue } = payload
+
+    // Check if the information inside the process fits the one from the token
+    if (process.env[authKey] !== authValue) {
+      delete process.env[authKey];
+      res.status(401).send({ status: 'not-authorized', msg: `You are not permitted to enter this route.` })
+    }
+
+    // If authentication is handled, continue the actual login and send the jwt to the client
+    else {
+      delete process.env[authKey];
+      UserSchema.findOne({ username: payload.aud }, (err, doc) => {
+        if (err) res.status(404).send({ status: 'not-found', msg: `User - password combination not found.` })
+
+        // If user is found in database, continue
+        else {
+          const jwtPayload = { authKey, authValue }
+          const jwtName = process.env.API_TOKEN_NAME;
+          const jwtSignature = process.env.API_SECRET;
+          const jwtOptions = {
+            audience: doc.username,
+            issuer: req.hostname,
+            expiresIn: '4h'
+          }
+
+          // Create the JWT and sign it
+          jwt.sign(jwtPayload, jwtSignature, jwtOptions, (err, token) => {
+            if (err) { res.status(500).send({ status: 'server-error', msg: `An error occured while authenticating.` }) }
+
+            // If there's no error, issue the token to the client and redirect
+            else {
+              res.status(200).cookie(jwtName, token).send({ status: 'success', msg: 'Successfully logged in!', token });
+            }
+          })
+        }
+      })
+    }
+  })
+}
+
+module.exports = { handleAuthenticate, handleLogin };
