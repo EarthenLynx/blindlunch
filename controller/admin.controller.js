@@ -131,6 +131,67 @@ const handleDeleteCodetypeById = (req, res) => {
 }
 
 // Code Language Controls
+const handleCreateCodelanguage = (req, res) => {
+  // Check if body is non - empty
+  if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
+    res.status(400).send({ status: 'client-error', msg: 'The request did not contain the necessary parameters' })
+  }
+  // If body exists, extract its content and build the role
+  else {
+    const { name } = req.body;
+    const id = crs({ length: 25, type: 'url-safe' });
+
+    const role = new CodelanguageSchema({ name, id })
+
+    role.save((err, doc) => {
+      if (err) {
+        res.status(500).send({ status: 'server-error', msg: 'Could not save role to database', err })
+      } else {
+        res.status(200).send({ status: 'success', msg: 'Codelanguage successfully saved to database', doc })
+      }
+    });
+  }
+}
+
+const handleGetCodelanguageList = (req, res) => {
+  CodelanguageSchema.find({}, (err, doc) => {
+    if (err) {
+      res.status(500).send({ status: 'server-error', msg: 'Could not fetch Codelanguages from database', err })
+    } else if (doc === null) {
+      res.status(404).send({ status: 'not-found', msg: 'No Codelanguages found.', err })
+    } else {
+      res.status(200).send({ status: 'success', msg: `Fetched ${doc.length} Codelanguages from database`, doc })
+    }
+  })
+}
+
+const handleDeleteCodelanguageById = (req, res) => {
+    // Check if a parameter is passed
+    if (!req.query.id) {
+      res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: id' })
+    } else {
+      const id = req.query.id;
+  
+      // Check if the role exists in database
+      CodelanguageSchema.findOne({ id }, (err, doc) => {
+        console.log(doc);
+        if (err || !doc) {
+          res.status(500).send({ status: 'server-error', msg: 'Could not find the Codelanguage to delete in database', err })
+        }
+  
+        // If the role exists, delete it
+        else {
+          CodelanguageSchema.findOneAndDelete({ id: doc.id }, (err, doc) => {
+            if (err) {
+              res.status(500).send({ status: 'server-error', msg: 'Could not delete Codelanguage from database', err })
+            } else {
+              res.status(200).send({ status: 'success', msg: 'Codetype successfully deleted from database', doc })
+            }
+          });
+        }
+      });
+    }
+}
 
 module.exports = { 
   handleCreateRole, 
@@ -138,5 +199,8 @@ module.exports = {
   handleDeleteRoleById, 
   handleCreateCodetype, 
   handleGetCodetypeList, 
-  handleDeleteCodetypeById 
+  handleDeleteCodetypeById,
+  handleCreateCodelanguage,
+  handleGetCodelanguageList,
+  handleDeleteCodelanguageById
 }
