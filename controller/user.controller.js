@@ -112,12 +112,9 @@ const handleGetUsersByRole = (req, res) => {
 }
 
 const handleUpdateUserInfo = (req, res, payload) => {
-  // Check if query has been sent
-  if (!req.query.id) {
-    res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: id' })
-  }
+
   // Check if body has been sent
-  else if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
+  if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
     res.status(400).send({ status: 'client-error', msg: 'The request did not contain a body.' })
   }
   // Check if the body is properly formatted
@@ -127,14 +124,15 @@ const handleUpdateUserInfo = (req, res, payload) => {
 
   // If query and body are correctly available, continue
   else {
-    const id = req.query.id;
+    // Extract the id from the payload
+    const id = payload.id;
     const { username, email } = req.body;
 
     UserSchema.findOne({ id }, (err, doc) => {
       if (err) { res.status(500).send({ status: 'server-error', msg: 'Could not connect to database', err }) }
 
       // Check if the user is authorized to change his own information
-      else if (doc.username !== payload.username) { res.status(401).send({ status: 'not-authorized', msg: `You are not allowed to modify this resource` }) }
+      else if (doc.id !== payload.id) { res.status(401).send({ status: 'not-authorized', msg: `You are not allowed to modify this resource` }) }
 
       // If document doesn't exist, send error message
       else if (!doc) { res.status(404).send({ status: 'not-found', msg: `The user you wanted to update does not exist: ID>${id}: ${username}` }) }
@@ -145,13 +143,18 @@ const handleUpdateUserInfo = (req, res, payload) => {
           if (err) {
             res.status(500).send({ status: 'server-error', msg: 'Could not update user', err })
           } else {
-            res.status(200).send({ status: 'success', msg: `Updated user ${doc.username}`, doc })
+            AuthSchema.findOneAndUpdate({ username: doc.username }, { username }, (err, doc) => {
+              if (err) {
+                res.status(500).send({ status: 'server-error', msg: 'Could not update user', err })
+              } else {
+                res.status(200).send({ status: 'success', msg: `Updated user ${doc.username}`, doc })
+              }
+
+            })
           }
-        })
+        });
       }
-    })
-
-
+    });
   }
 }
 
