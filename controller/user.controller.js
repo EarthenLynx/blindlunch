@@ -45,7 +45,6 @@ const handleCreateUser = (req, res) => {
             // First, save the auth, then user schema
             auth.save((err, doc) => {
               if (err) {
-                console.log(err);
                 res.status(500).send({ status: 'server-error', msg: 'Could not connect to database', err })
               } else {
                 user.save((err, doc) => {
@@ -159,5 +158,8 @@ const handleUpdateUserInfo = (req, res, payload) => {
     });
   }
 }
+
+// TODO: add function to update user roles
+// const handleUpdateUserRoles()
 
 module.exports = { handleCreateUser, handleGetUserList, handleGetUserById, handleGetUsersByRole, handleUpdateUserInfo }
