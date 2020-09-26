@@ -19,7 +19,6 @@ const handleCreateUser = (req, res) => {
     // Create required params for user and auth models
     const id = crs({ length: 25, type: 'url-safe' });
     const { username, password, email } = req.body;
-    const codeIds = [];
     const registered = moment();
     const lastLogin = moment();
 
@@ -40,7 +39,7 @@ const handleCreateUser = (req, res) => {
           // If guestrole is found, continue and create new user
           else {
             const auth = new AuthSchema({ username, password: hash })
-            const user = new UserSchema({ id, username, password, email, roles: [...doc], codeIds, registered, lastLogin })
+            const user = new UserSchema({ id, username, password, email, roles: [...doc], registered, lastLogin })
 
             // First, save the auth, then user schema
             auth.save((err, doc) => {
