@@ -45,8 +45,32 @@ const handleGetCodeByUserId = (req, res, payload) => {
     CodeSchema.find({ 'user.userId': userId }, (err, doc) => {
       if (err) {
         res.status(500).send({ status: 'server-error', msg: 'Could not fetch user from database', err })
-      } else if (!doc) {
-        res.status(404).send({ status: 'not-found', msg: `No user found with id ${id}.`, err })
+      } 
+
+      // Check if the resulting array is empty
+      else if (doc.length === 0) {
+        res.status(404).send({ status: 'not-found', msg: `No code snippets found `})
+      } 
+      
+      // If results have successfully been read, continue
+      else {
+        res.status(200).send({ status: 'success', msg: `Fetched ${doc.length} codesnippets from database`, doc})
+      }
+    })
+  }
+}
+
+const handleGetCodeByUsername = (req, res, payload) => {
+  // Check if a parameter is passed
+  if (!req.query.username) {
+    res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: id' })
+  } else {
+    const username = req.query.username;
+    CodeSchema.find({ 'user.username': username }, (err, doc) => {
+      if (err) {
+        res.status(500).send({ status: 'server-error', msg: 'Could not fetch code snippets from database', err })
+      } else if (doc.length === 0) {
+        res.status(404).send({ status: 'not-found', msg: `No code snippets found `})
       } else {
         res.status(200).send({ status: 'success', msg: `Fetched ${doc.length} codesnippets from database`, doc})
       }
@@ -54,4 +78,4 @@ const handleGetCodeByUserId = (req, res, payload) => {
   }
 }
 
-module.exports = { handleCreateCode, handleGetCodeByUserId }
+module.exports = { handleCreateCode, handleGetCodeByUserId, handleGetCodeByUsername }

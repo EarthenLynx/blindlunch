@@ -3,6 +3,7 @@ const express = require("express");
 const {
   handleGetCodeByUserId,
   handleCreateCode,
+  handleGetCodeByUsername,
   // handleGetCode,
   // handleGetCodeById,
   // handleDeleteCodeById,
@@ -15,7 +16,7 @@ const {verifyUser} = require("../../middleware/verifyUser");
 var router = express.Router();
 
 router.get("/byUserId", (req, res) => verifyUser(req, res, 'member', (payload) => handleGetCodeByUserId(req, res)))
-
+router.get("/byUsername", (req, res) => verifyUser(req, res, 'member', (payload) => handleGetCodeByUsername(req, res)))
 // router.get('/:id', (req, res) => {
 //   handleGetCodeById(req, res)
 // })
