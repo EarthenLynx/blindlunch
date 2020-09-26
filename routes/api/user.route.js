@@ -11,7 +11,7 @@ const {
 const { verifyUser } = require("../../middleware/verifyUser");
 
 // Setup the router
-var router = express.Router();
+const router = express.Router();
 
 // GET
 router.get('/all', (req, res) => verifyUser(req, res, 'guest', (payload) => handleGetUserList(req, res)));

@@ -158,7 +158,4 @@ const handleUpdateUserInfo = (req, res, payload) => {
   }
 }
 
-// TODO: add function to update user roles
-// const handleUpdateUserRoles()
-
 module.exports = { handleCreateUser, handleGetUserList, handleGetUserById, handleGetUsersByRole, handleUpdateUserInfo }

@@ -19,13 +19,12 @@ const {
 const { verifyUser } = require("../../middleware/verifyUser");
 
 // Setup the router
-var router = express.Router();
+const router = express.Router();
 
 // GET
 router.get("/role", (req, res) => verifyUser(req, res, 'admin', (payload) => handleGetRoleList(req, res)));
 router.get("/codetype", (req, res) => verifyUser(req, res, 'admin', (payload) => handleGetCodetypeList(req, res)));
 router.get("/codelanguage", (req, res) => verifyUser(req, res, 'admin', (payload) => handleGetCodelanguageList(req, res)));
-
 
 // POST
 router.post("/role", (req, res) => verifyUser(req, res, 'admin', (payload) => handleCreateRole(req, res)));

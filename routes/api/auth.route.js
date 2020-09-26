@@ -4,7 +4,7 @@ const { handleAuthenticate, handleLogin } = require("../../controller/auth.contr
 const { authLog } = require('../../middleware/logger');
 
 // Setup the router
-var router = express.Router();
+const router = express.Router();
 
 // Setup the logger middleware
 router.use((req, res, next) => authLog(req, res, next))
