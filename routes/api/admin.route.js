@@ -1,5 +1,6 @@
 // Import needed modules
 const express = require("express");
+const { verify } = require("jsonwebtoken");
 const {
   handleCreateRole,
   handleDeleteRoleById,
@@ -9,7 +10,8 @@ const {
   handleDeleteCodetypeById,
   handleCreateCodelanguage,
   handleGetCodelanguageList,
-  handleDeleteCodelanguageById
+  handleDeleteCodelanguageById,
+  handleAddUserRole
 } = require("../../controller/admin.controller");
 
 const { verifyUser } = require("../../middleware/verifyUser");
@@ -27,6 +29,9 @@ router.get("/codelanguage", (req, res) => verifyUser(req, res, 'admin', (payload
 router.post("/role", (req, res) => verifyUser(req, res, 'admin', (payload) => handleCreateRole(req, res)));
 router.post("/codetype", (req, res) => verifyUser(req, res, 'admin', (payload) => handleCreateCodetype(req, res)))
 router.post("/codelanguage", (req, res) => verifyUser(req, res, 'admin', (payload) => handleCreateCodelanguage(req, res)))
+
+// PUT
+router.put("/user", (req, res) => verifyUser(req, res, 'admin', (payload) => handleAddUserRole(req, res)))
 
 // DELETE
 router.delete("/role", (req, res) => verifyUser(req, res, 'admin', (payload) => handleDeleteRoleById(req, res)));
