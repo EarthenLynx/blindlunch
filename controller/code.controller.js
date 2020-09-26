@@ -1,7 +1,6 @@
 const crs = require('crypto-random-string');
 const moment = require('moment');
 const CodeSchema = require('../models/code.model');
-const UserSchema = require('../models/user.model');
 
 const handleCreateCode = (req, res, payload) => {
   if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
@@ -37,4 +36,22 @@ const handleCreateCode = (req, res, payload) => {
 
 }
 
-module.exports = { handleCreateCode }
+const handleGetCodeByUserId = (req, res, payload) => {
+  // Check if a parameter is passed
+  if (!req.query.id) {
+    res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: id' })
+  } else {
+    const userId = req.query.id;
+    CodeSchema.find({ 'user.userId': userId }, (err, doc) => {
+      if (err) {
+        res.status(500).send({ status: 'server-error', msg: 'Could not fetch user from database', err })
+      } else if (!doc) {
+        res.status(404).send({ status: 'not-found', msg: `No user found with id ${id}.`, err })
+      } else {
+        res.status(200).send({ status: 'success', msg: `Fetched ${doc.length} codesnippets from database`, doc})
+      }
+    })
+  }
+}
+
+module.exports = { handleCreateCode, handleGetCodeByUserId }

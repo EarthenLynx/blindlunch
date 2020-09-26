@@ -1,6 +1,7 @@
 // Import needed modules
 const express = require("express");
 const {
+  handleGetCodeByUserId,
   handleCreateCode,
   // handleGetCode,
   // handleGetCodeById,
@@ -13,9 +14,7 @@ const {verifyUser} = require("../../middleware/verifyUser");
 // Setup the router
 var router = express.Router();
 
-// router.get("/", (req, res) => {
-//   handleGetCode(req, res);
-// })
+router.get("/byUserId", (req, res) => verifyUser(req, res, 'member', (payload) => handleGetCodeByUserId(req, res)))
 
 // router.get('/:id', (req, res) => {
 //   handleGetCodeById(req, res)
