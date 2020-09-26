@@ -5,7 +5,7 @@ const CodeSchema = new mongoose.Schema({
   title: { type: String, required: true },            /* Title for the code snippet                 */
   description: { type: String, required: true },      /* Brief Description                          */
   lang: { type: String, required: true },             /* Programming language                       */
-  type: { type: String, required: true },                             /* Indicates if it's a class, function, etc.  */
+  type: { type: String, required: true },             /* Indicates if it's a class, function, etc.  */
   user: { 
     userId: { type: String, required: true }, 
     username: { type: String, required: true }

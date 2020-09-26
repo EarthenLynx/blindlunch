@@ -1,6 +1,7 @@
-const CodeSchema = require('../models/code.model');
 const crs = require('crypto-random-string');
 const moment = require('moment');
+const CodeSchema = require('../models/code.model');
+const UserSchema = require('../models/user.model');
 
 const handleCreateCode = (req, res, payload) => {
   if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
