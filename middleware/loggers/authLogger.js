@@ -1,4 +1,5 @@
 const winston = require('winston');
+const moment = require("moment")
 
 const authLogger = winston.createLogger({
   level: 'info',
@@ -22,16 +23,16 @@ const authLog = (req, res, next) => {
   const method = req.method;
 
   if (method === "POST") {
-    authLogger.log('info', `${ip}: ${protocol} - ${method} - Authentication attempt at ${url}`)
+    authLogger.log('info', `IP ${ip} sent ${protocol} - ${method} - Authentication attempt at ${url} | ${moment()}`)
   } else {
-    authLogger.log('info', `${ip}: ${protocol} - ${method} - Login attempt at ${url}`)
+    authLogger.log('info', `IP ${ip} sent ${protocol} - ${method} - Login attempt at ${url} | ${moment()}`)
   }
   next();
 }
 
 // Log errors during the authentication process
 const authErrorLog = (ip, httpStatus, msg) => {
-  authLogger.log('info', `${ip}: http status ${httpStatus} error: ${msg}`)
+  authLogger.log('info', `IP ${ip} sent http status ${httpStatus} error: ${msg} | ${moment()}`)
 }
 
 module.exports = { authLog, authErrorLog } 

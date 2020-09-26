@@ -5,6 +5,8 @@ const UserSchema = require("../models/user.model");
 const AuthSchema = require("../models/auth.model");
 const RolesSchema = require("../models/roles.model");
 
+// Controller Owners: Guest, Member, Admin
+
 const handleCreateUser = (req, res) => {
 
   // Check if body is non - empty
