@@ -1,12 +1,13 @@
 // Import needed modules
 const express = require("express");
-const {
-  handleAuthenticate, 
-  handleLogin
-} = require("../../controller/auth.controller")
+const { handleAuthenticate, handleLogin } = require("../../controller/auth.controller")
+const { authLog } = require('../../middleware/logger');
 
 // Setup the router
 var router = express.Router();
+
+// Setup the logger middleware
+router.use((req, res, next) => authLog(req, res, next))
 
 router.post("/authenticate", (req, res) => {
   handleAuthenticate(req, res);
