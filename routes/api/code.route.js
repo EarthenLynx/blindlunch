@@ -7,6 +7,7 @@ const {
   handleGetCodeByUsername,
   handleGetCodeByLanguage, 
   handleGetCodeByType,
+  handleDeleteCodeById,
 } = require("../../controller/code.controller");
 
 const {verifyUser} = require("../../middleware/verifyUser");
@@ -24,5 +25,7 @@ router.get("/byType", (req, res) => verifyUser(req, res, 'member', (payload) => 
 // POST
 router.post("/", (req, res) => verifyUser(req, res, 'member', (payload) => handleCreateCode(req, res, payload)))
 
+// DELETE
+router.delete("/byId", (req, res) => verifyUser(req, res, 'member', (payload) => handleDeleteCodeById(req, res, payload)));
 
 module.exports = router;
