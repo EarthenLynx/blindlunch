@@ -4,6 +4,8 @@ const {
   handleGetCodeByUserId,
   handleCreateCode,
   handleGetCodeByUsername,
+  handleGetCodeByLanguage, 
+  handleGetCodeByType,
   // handleGetCode,
   // handleGetCodeById,
   // handleDeleteCodeById,
@@ -17,6 +19,8 @@ var router = express.Router();
 
 router.get("/byUserId", (req, res) => verifyUser(req, res, 'member', (payload) => handleGetCodeByUserId(req, res)))
 router.get("/byUsername", (req, res) => verifyUser(req, res, 'member', (payload) => handleGetCodeByUsername(req, res)))
+router.get("/byLanguage", (req, res) => verifyUser(req, res, 'member', (payload) => handleGetCodeByLanguage(req, res)))
+router.get("/byType", (req, res) => verifyUser(req, res, 'member', (payload) => handleGetCodeByType(req, res)))
 // router.get('/:id', (req, res) => {
 //   handleGetCodeById(req, res)
 // })

@@ -78,4 +78,40 @@ const handleGetCodeByUsername = (req, res, payload) => {
   }
 }
 
-module.exports = { handleCreateCode, handleGetCodeByUserId, handleGetCodeByUsername }
+const handleGetCodeByLanguage = (req, res, payload) => {
+  // Check if a parameter is passed
+  if (!req.query.lang) {
+    res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: id' })
+  } else {
+    const lang = req.query.lang;
+    CodeSchema.find({ lang }, (err, doc) => {
+      if (err) {
+        res.status(500).send({ status: 'server-error', msg: 'Could not fetch code snippets from database', err })
+      } else if (doc.length === 0) {
+        res.status(404).send({ status: 'not-found', msg: `No code snippets found `})
+      } else {
+        res.status(200).send({ status: 'success', msg: `Fetched ${doc.length} codesnippets from database`, doc})
+      }
+    })
+  }
+}
+
+const handleGetCodeByType = (req, res, payload) => {
+  // Check if a parameter is passed
+  if (!req.query.type) {
+    res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: id' })
+  } else {
+    const type = req.query.type;
+    CodeSchema.find({ type }, (err, doc) => {
+      if (err) {
+        res.status(500).send({ status: 'server-error', msg: 'Could not fetch code snippets from database', err })
+      } else if (doc.length === 0) {
+        res.status(404).send({ status: 'not-found', msg: `No code snippets found `})
+      } else {
+        res.status(200).send({ status: 'success', msg: `Fetched ${doc.length} codesnippets from database`, doc})
+      }
+    })
+  }
+}
+
+module.exports = { handleCreateCode, handleGetCodeByUserId, handleGetCodeByUsername, handleGetCodeByLanguage, handleGetCodeByType }
