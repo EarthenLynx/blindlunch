@@ -111,7 +111,7 @@ const handleGetUsersByRole = (req, res) => {
   }
 }
 
-const handleUpdateUserById = (req, res) => {
+const handleUpdateUserInfo = (req, res, payload) => {
   // Check if query has been sent
   if (!req.query.id) {
     res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: id' })
@@ -121,7 +121,7 @@ const handleUpdateUserById = (req, res) => {
     res.status(400).send({ status: 'client-error', msg: 'The request did not contain a body.' })
   }
   // Check if the body is properly formatted
-  else if(!req.body.username || !req.body.email) {
+  else if (!req.body.username || !req.body.email) {
     res.status(400).send({ status: 'client-error', msg: 'The request did not contain the necessary params: username & email.' })
   }
 
@@ -132,6 +132,10 @@ const handleUpdateUserById = (req, res) => {
 
     UserSchema.findOne({ id }, (err, doc) => {
       if (err) { res.status(500).send({ status: 'server-error', msg: 'Could not connect to database', err }) }
+
+      // Check if the user is authorized to change his own information
+      else if (doc.username !== payload.username) { res.status(401).send({ status: 'not-authorized', msg: `You are not allowed to modify this resource` }) }
+
       // If document doesn't exist, send error message
       else if (!doc) { res.status(404).send({ status: 'not-found', msg: `The user you wanted to update does not exist: ID>${id}: ${username}` }) }
 
@@ -151,4 +155,4 @@ const handleUpdateUserById = (req, res) => {
   }
 }
 
-module.exports = { handleCreateUser, handleGetUserList, handleGetUserById, handleGetUsersByRole, handleUpdateUserById }
+module.exports = { handleCreateUser, handleGetUserList, handleGetUserById, handleGetUsersByRole, handleUpdateUserInfo }
