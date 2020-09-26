@@ -1,6 +1,7 @@
 const crs = require('crypto-random-string');
 const UserSchema = require("../models/user.model");
 const RolesSchema = require('../models/admin/roles.model');
+const AuthSchema = require("../models/auth.model");
 const CodetypeSchema = require("../models/admin/codetype.model")
 const CodelanguageSchema = require("../models/admin/codelanguage.model")
 
@@ -289,7 +290,7 @@ const handleDeleteUserRole = (req, res) => {
             // Check if user actually has the role
             const roleExists = user.roles.findIndex(el => el.id === role.id);
             if (roleExists === -1) {
-              { res.status(400).send({ status: 'client-error', msg: 'User does not this role assigned'}) }
+              { res.status(400).send({ status: 'client-error', msg: 'User does not this role assigned' }) }
             }
 
             // If user does not have the role yet, add the role and save the updated user
@@ -310,6 +311,31 @@ const handleDeleteUserRole = (req, res) => {
   }
 }
 
+const handleDeleteUserById = (req, res) => {
+  if (!req.query || !req.query.id) {
+    res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: id' })
+  } else {
+    const id = req.query.id;
+    UserSchema.findOneAndDelete({ id }, (err, doc) => {
+      if (err) {
+        res.status(500).send({ status: 'server-error', msg: 'Could not delete user', err })
+      } else if (!doc) {
+        { res.status(404).send({ status: 'not-found', msg: `The user you want to delete does not exist` }) }
+      }
+      // If user is deleteable, also delete him in the auth database
+      else {
+        AuthSchema.findOneAndDelete({ username: doc.username }, (err, doc) => {
+          if (err) {
+            res.status(500).send({ status: 'server-error', msg: 'Could not delete user', err })
+          } else {
+            res.status(200).send({ status: 'success', msg: `User ${doc.username} has been removed from the database`, doc })
+          }
+        })
+      }
+    })
+  }
+}
+
 module.exports = {
   handleCreateRole,
   handleGetRoleList,
@@ -320,6 +346,7 @@ module.exports = {
   handleCreateCodelanguage,
   handleGetCodelanguageList,
   handleDeleteCodelanguageById,
-  handleAddUserRole, 
+  handleAddUserRole,
   handleDeleteUserRole,
+  handleDeleteUserById
 }

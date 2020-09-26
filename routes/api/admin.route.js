@@ -12,7 +12,8 @@ const {
   handleGetCodelanguageList,
   handleDeleteCodelanguageById,
   handleAddUserRole, 
-  handleDeleteUserRole
+  handleDeleteUserRole,
+  handleDeleteUserById
 } = require("../../controller/admin.controller");
 
 const { verifyUser } = require("../../middleware/verifyUser");
@@ -39,5 +40,6 @@ router.delete("/role", (req, res) => verifyUser(req, res, 'admin', (payload) => 
 router.delete("/codetype", (req, res) => verifyUser(req, res, 'admin', (payload) => handleDeleteCodetypeById(req, res)));
 router.delete("/codelanguage", (req, res) => verifyUser(req, res, 'admin', (payload) => handleDeleteCodelanguageById(req, res)));
 router.delete("/userrole", (req, res) => verifyUser(req, res, 'admin', (payload) => handleDeleteUserRole(req, res)))
+router.delete("/user", (req, res) => verifyUser(req, res, 'admin', (payload) => handleDeleteUserById(req, res)))
 
 module.exports = router;
