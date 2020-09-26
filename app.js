@@ -10,7 +10,7 @@ require('dotenv').config()
 const routerCode = require('./routes/api/code.route');
 const routerAuth = require('./routes/api/auth.route');
 const routerUser = require('./routes/api/user.route');
-const routerRoles = require('./routes/api/roles.route')
+const routerAdmin = require('./routes/api/admin.route')
 const app = express();
 
 // Initialize the middleware
@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/code', routerCode);
 app.use('/api/auth', routerAuth);
 app.use('/api/user', routerUser);
-app.use('/api/roles', routerRoles);
+app.use('/api/admin', routerAdmin);
 
 
 // Connect to the database

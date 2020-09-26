@@ -3,7 +3,7 @@ const crs = require("crypto-random-string")
 const moment = require("moment");
 const UserSchema = require("../models/user.model");
 const AuthSchema = require("../models/auth.model");
-const RolesSchema = require("../models/roles.model");
+const RolesSchema = require("../models/admin/roles.model");
 
 // Controller Owners: Guest, Member, Admin
 

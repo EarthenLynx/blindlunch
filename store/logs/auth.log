@@ -41,3 +41,7 @@
 {"level":"info","message":"IP ::1 sent http - GET - Login attempt at /api/auth/login | Sat Sep 26 2020 16:05:34 GMT+0200"}
 {"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/authenticate | Sat Sep 26 2020 18:06:48 GMT+0200"}
 {"level":"info","message":"IP ::1 sent http - GET - Login attempt at /api/auth/login | Sat Sep 26 2020 18:06:49 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/authenticate | Sat Sep 26 2020 20:49:22 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - GET - Login attempt at /api/auth/login | Sat Sep 26 2020 20:49:22 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/authenticate | Sat Sep 26 2020 20:50:01 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - GET - Login attempt at /api/auth/login | Sat Sep 26 2020 20:50:01 GMT+0200"}

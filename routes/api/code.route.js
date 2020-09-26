@@ -6,10 +6,6 @@ const {
   handleGetCodeByUsername,
   handleGetCodeByLanguage, 
   handleGetCodeByType,
-  // handleGetCode,
-  // handleGetCodeById,
-  // handleDeleteCodeById,
-  // handleUpdateCodeById
 } = require("../../controller/code.controller");
 
 const {verifyUser} = require("../../middleware/verifyUser");
