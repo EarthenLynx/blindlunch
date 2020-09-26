@@ -1,6 +1,7 @@
 const crs = require("crypto-random-string");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const moment = require("moment");
 const AuthSchema = require("../models/auth.model");
 const UserSchema = require("../models/user.model");
 const { authErrorLog } = require("../middleware/logger");
@@ -111,14 +112,19 @@ const handleLogin = (req, res) => {
     // If authentication is handled, continue the actual login and send the jwt to the client
     else {
       delete process.env[authKey];
-      UserSchema.findOne({ username: payload.aud }, (err, doc) => {
+      UserSchema.findOneAndUpdate({ username: payload.aud }, {lastLogin: moment()}, (err, doc) => {
         if (err) res.status(404).send({ status: 'not-found', msg: `User - password combination not found.` })
 
         // If user is found in database, continue
         else {
-          const jwtPayload = { authKey, authValue }
           const jwtName = process.env.API_TOKEN_NAME;
           const jwtSignature = process.env.API_SECRET;
+          const jwtPayload = {
+            id: doc.id,
+            roles: doc.roles,
+            codeIds: doc.codeIds,
+            lastLogin: doc.lastLogin,
+          }
           const jwtOptions = {
             audience: doc.username,
             issuer: req.hostname,
