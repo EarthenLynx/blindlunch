@@ -27,11 +27,16 @@ const authLog = (req, res, next) => {
   const method = req.method;
 
   if (method === "POST") {
-    authLogger.log('info', `${protocol} - ${method}: Authentication attempt received from ${ip}. Original URL: ${url}`)
+    authLogger.log('info', `${ip}: ${protocol} - ${method} - Authentication attempt at ${url}`)
   } else {
-    logger.log('info', `${protocol} - ${method}: Login attempt received from ${ip}. Original URL: ${url}`)
+    logger.log('info', `${ip}: ${protocol} - ${method} - Login attempt at ${url}`)
   }
   next();
 }
 
-module.exports = { authLog } 
+// Log errors during the authentication process
+const authErrorLog = (ip, httpStatus, msg) => {
+  authLogger.log('info', `${ip}: http status ${httpStatus} error: ${msg}`)
+}
+
+module.exports = { authLog, authErrorLog } 
