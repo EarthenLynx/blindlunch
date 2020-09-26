@@ -249,8 +249,64 @@ const handleAddUserRole = (req, res) => {
         });
       }
     })
+  }
+}
 
+const handleDeleteUserRole = (req, res) => {
+  if (!req.query || !req.query.id) {
+    res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: id' })
+  }
+  // Check if body has been sent
+  else if (Object.keys(req.body).length === 0 && req.body.constructor === Object) {
+    res.status(400).send({ status: 'client-error', msg: 'The request did not contain a body.' })
+  }
+  // Check if the body is properly formatted
+  else if (!req.body.rolename) {
+    res.status(400).send({ status: 'client-error', msg: 'The request did not contain the necessary params: rolename.' })
+  }
 
+  // If query and body are correctly available, continue
+  else {
+    // Extract the id from the query and the rolename from the body
+    const id = req.query.id;
+    const { rolename } = req.body;
+
+    RolesSchema.findOne({ name: rolename }, (err, doc) => {
+      if (err) { res.status(500).send({ status: 'server-error', msg: 'Could not connect to database', err }) }
+      else if (!doc) { res.status(404).send({ status: 'not-found', msg: `The role you wanted to assign does not exist: ${rolename}` }) }
+
+      // If the role to update exists, continue
+      else {
+        const role = doc;
+        UserSchema.findOne({ id }, (err, doc) => {
+          if (err) { res.status(500).send({ status: 'server-error', msg: 'Could not connect to database', err }) }
+
+          // If document doesn't exist, send error message
+          else if (!doc) { res.status(404).send({ status: 'not-found', msg: `The user you wanted to update does not exist: ID>${id}: ${username}` }) }
+          // If user exists, update it with the passed params
+          else {
+            const user = doc;
+            // Check if user actually has the role
+            const roleExists = user.roles.findIndex(el => el.id === role.id);
+            if (roleExists === -1) {
+              { res.status(400).send({ status: 'client-error', msg: 'User does not this role assigned'}) }
+            }
+
+            // If user does not have the role yet, add the role and save the updated user
+            else {
+              user.roles.splice(roleExists, 1);
+              UserSchema.findOneAndUpdate({ id: user.id }, user, (err, doc) => {
+                if (err) {
+                  res.status(500).send({ status: 'server-error', msg: 'Could not update user', err })
+                } else {
+                  res.status(200).send({ status: 'success', msg: `Role ${role.name} has been removed from user ${doc.username}`, doc })
+                }
+              });
+            }
+          }
+        });
+      }
+    })
   }
 }
 
@@ -264,5 +320,6 @@ module.exports = {
   handleCreateCodelanguage,
   handleGetCodelanguageList,
   handleDeleteCodelanguageById,
-  handleAddUserRole
+  handleAddUserRole, 
+  handleDeleteUserRole,
 }

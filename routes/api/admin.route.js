@@ -11,7 +11,8 @@ const {
   handleCreateCodelanguage,
   handleGetCodelanguageList,
   handleDeleteCodelanguageById,
-  handleAddUserRole
+  handleAddUserRole, 
+  handleDeleteUserRole
 } = require("../../controller/admin.controller");
 
 const { verifyUser } = require("../../middleware/verifyUser");
@@ -31,11 +32,12 @@ router.post("/codetype", (req, res) => verifyUser(req, res, 'admin', (payload) =
 router.post("/codelanguage", (req, res) => verifyUser(req, res, 'admin', (payload) => handleCreateCodelanguage(req, res)))
 
 // PUT
-router.put("/user", (req, res) => verifyUser(req, res, 'admin', (payload) => handleAddUserRole(req, res)))
+router.put("/userrole", (req, res) => verifyUser(req, res, 'admin', (payload) => handleAddUserRole(req, res)))
 
 // DELETE
 router.delete("/role", (req, res) => verifyUser(req, res, 'admin', (payload) => handleDeleteRoleById(req, res)));
 router.delete("/codetype", (req, res) => verifyUser(req, res, 'admin', (payload) => handleDeleteCodetypeById(req, res)));
 router.delete("/codelanguage", (req, res) => verifyUser(req, res, 'admin', (payload) => handleDeleteCodelanguageById(req, res)));
+router.delete("/userrole", (req, res) => verifyUser(req, res, 'admin', (payload) => handleDeleteUserRole(req, res)))
 
 module.exports = router;
