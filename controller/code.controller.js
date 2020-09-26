@@ -19,8 +19,11 @@ const handleCreateCode = (req, res, payload) => {
     const user = { username: aud, userId: id }
     const { title, description, lang, type, value } = req.body;
 
+    // Create an ID for the code 
+    const codeId = crs({ length: 25, type: 'base64' });
+
     // Create the code schema object 
-    const code = new CodeSchema({ id, title, description, lang, type, user, likes: 0, value, createdAt: moment(), updatedAt: moment() });
+    const code = new CodeSchema({ id: codeId, title, description, lang, type, user, likes: 0, value, createdAt: moment(), updatedAt: moment() });
 
     code.save((err, doc) => {
       if (err) {
