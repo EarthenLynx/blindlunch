@@ -78,6 +78,25 @@ const handleGetCodeByUsername = (req, res, payload) => {
   }
 }
 
+const handleGetCodeByActiveUserId = (req, res, payload) => {
+    const userId = payload.id;
+    CodeSchema.find({ 'user.userId': userId }, (err, doc) => {
+      if (err) {
+        res.status(500).send({ status: 'server-error', msg: 'Could not fetch user from database', err })
+      } 
+
+      // Check if the resulting array is empty
+      else if (doc.length === 0) {
+        res.status(404).send({ status: 'not-found', msg: `No code snippets found `})
+      } 
+      
+      // If results have successfully been read, continue
+      else {
+        res.status(200).send({ status: 'success', msg: `Fetched ${doc.length} codesnippets from database`, doc})
+      }
+    })
+}
+
 const handleGetCodeByLanguage = (req, res, payload) => {
   // Check if a parameter is passed
   if (!req.query.lang) {
@@ -114,4 +133,4 @@ const handleGetCodeByType = (req, res, payload) => {
   }
 }
 
-module.exports = { handleCreateCode, handleGetCodeByUserId, handleGetCodeByUsername, handleGetCodeByLanguage, handleGetCodeByType }
+module.exports = { handleCreateCode, handleGetCodeByUserId, handleGetCodeByUsername, handleGetCodeByActiveUserId, handleGetCodeByLanguage, handleGetCodeByType }
