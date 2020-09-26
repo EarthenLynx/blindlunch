@@ -194,7 +194,7 @@ const handleDeleteCodelanguageById = (req, res) => {
   }
 }
 
-// User controls
+// Admin user controls
 const handleAddUserRole = (req, res) => {
   if (!req.query || !req.query.id) {
     res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: id' })
@@ -225,14 +225,14 @@ const handleAddUserRole = (req, res) => {
           if (err) { res.status(500).send({ status: 'server-error', msg: 'Could not connect to database', err }) }
 
           // If document doesn't exist, send error message
-          else if (!doc) { res.status(404).send({ status: 'not-found', msg: `The user you wanted to update does not exist: ID>${id}: ${username}` }) }
+          else if (!doc) { res.status(404).send({ status: 'not-found', msg: `The user you wanted to update does not exist: ID>${id}` }) }
           // If user exists, update it with the passed params
           else {
             const user = doc;
             // Check if user already has the role
             const roleExists = user.roles.findIndex(el => el.id === role.id);
             if (roleExists > -1) {
-              { res.status(400).send({ status: 'client-error', msg: 'User already has this role assigned', err }) }
+              { res.status(400).send({ status: 'client-error', msg: 'User already has this role assigned' }) }
             }
 
             // If user does not have the role yet, add the role and save the updated user
