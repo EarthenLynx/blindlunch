@@ -140,17 +140,13 @@ const handleDeleteCodeById = (req, res, payload) => {
   } else {
     const userId = payload.id;
     const id = req.query.id;
+
+    // Check if a codesnipped can be found. If so, delete it
     CodeSchema.findOneAndDelete({ 'user.userId': userId, id }, (err, doc) => {
-      if (err) {
-        res.status(500).send({ status: 'server-error', msg: 'Could not fetch user from database', err })
-      } else if (!doc) {
-        res.status(404).send({ status: 'not-found', msg: `No code snippet found` })
-      }
-      // If results have successfully been read, continue
-      else {
-        res.status(200).send({ status: 'success', msg: `Deleted codesnippet from database`, doc })
-      }
-    })
+      if (err) res.status(500).send({ status: 'server-error', msg: 'Could not fetch user from database', err })
+      else if (!doc) res.status(404).send({ status: 'not-found', msg: `No code snippet found` })
+      else res.status(200).send({ status: 'success', msg: `Deleted codesnippet from database`, doc })
+      })
   }
 }
 

@@ -5,7 +5,7 @@ const {
   handleGetUserById,
   handleGetUsersByRole,
   handleCreateUser,
-  // handleUpdateUserInfo
+  handleUpdateUserInfo
 } = require("../../controller/user.controller")
 
 const { verifyUser } = require("../../middleware/verifyUser");

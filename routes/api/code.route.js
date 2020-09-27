@@ -5,17 +5,18 @@ const {
   handleGetCodeByActiveUserId,
   handleCreateCode,
   handleGetCodeByUsername,
-  handleGetCodeByLanguage, 
+  handleGetCodeByLanguage,
   handleGetCodeByType,
   handleDeleteCodeById,
 } = require("../../controller/code.controller");
 
-const {verifyUser} = require("../../middleware/verifyUser");
+const { verifyUser } = require("../../middleware/verifyUser");
 
 // Setup the router
 const router = express.Router();
 
 // GET
+// router.get("/", (req, res) => verifyUser(req, res, 'member', (payload) => handleGetCodeLazy(req, res)))
 router.get("/byUserId", (req, res) => verifyUser(req, res, 'member', (payload) => handleGetCodeByUserId(req, res)))
 router.get("/byActiveUserId", (req, res) => verifyUser(req, res, 'member', (payload) => handleGetCodeByActiveUserId(req, res, payload)))
 router.get("/byUsername", (req, res) => verifyUser(req, res, 'member', (payload) => handleGetCodeByUsername(req, res)))

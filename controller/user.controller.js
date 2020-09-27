@@ -80,14 +80,11 @@ const handleGetUserById = (req, res) => {
     res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: id' })
   } else {
     const id = req.query.id;
+    // Find a user by ID. If an error occurs or it cannot be found, handle these. Else, send the user to the client
     UserSchema.findOne({ id }, (err, doc) => {
-      if (err) {
-        res.status(500).send({ status: 'server-error', msg: 'Could not fetch user from database', err })
-      } else if (!doc) {
-        res.status(404).send({ status: 'not-found', msg: `No user found with id ${id}.`, err })
-      } else {
-        res.status(200).send({ status: 'success', msg: `User with id ${id} found`, doc })
-      }
+      if (err) res.status(500).send({ status: 'server-error', msg: 'Could not fetch user from database', err })
+      else if (!doc) res.status(404).send({ status: 'not-found', msg: `No user found with id ${id}.` })
+      else res.status(200).send({ status: 'success', msg: `User with id ${id} found`, doc })
     })
   }
 }
@@ -98,15 +95,12 @@ const handleGetUsersByRole = (req, res) => {
     res.status(400).send({ status: 'client-error', msg: 'The request URL did not contain the necessary parameters: role' })
   } else {
     const role = req.query.role;
-    console.log(role)
+
+    // Find an array of users by role. If an error occurs or it cannot be found, handle these. Else, send the users to the client
     UserSchema.find({ 'roles.name': role }, (err, doc) => {
-      if (err) {
-        res.status(500).send({ status: 'server-error', msg: 'Could not fetch user from database', err })
-      } else if (!doc) {
-        res.status(404).send({ status: 'not-found', msg: `No user found with role ${role}.`, err })
-      } else {
-        res.status(200).send({ status: 'success', msg: `${doc.length} user with role ${role} found`, doc })
-      }
+      if (err) res.status(500).send({ status: 'server-error', msg: 'Could not fetch user from database', err })
+      if (!doc) res.status(404).send({ status: 'not-found', msg: `No user found with role ${role}.` })
+      res.status(200).send({ status: 'success', msg: `${doc.length} user with role ${role} found`, doc })
     })
   }
 }
@@ -144,11 +138,8 @@ const handleUpdateUserInfo = (req, res, payload) => {
             res.status(500).send({ status: 'server-error', msg: 'Could not update user', err })
           } else {
             AuthSchema.findOneAndUpdate({ username: doc.username }, { username }, (err, doc) => {
-              if (err) {
-                res.status(500).send({ status: 'server-error', msg: 'Could not update user', err })
-              } else {
-                res.status(200).send({ status: 'success', msg: `Updated user ${doc.username}`, doc })
-              }
+              if (err) res.status(500).send({ status: 'server-error', msg: 'Could not update user authentication. Please contact a system administrator', err })
+              res.status(200).send({ status: 'success', msg: `Updated user ${doc.username}`, doc })
 
             })
           }

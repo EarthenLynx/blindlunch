@@ -51,9 +51,9 @@ const handleDeleteRoleById = (req, res) => {
 
     // Check if the role exists in database
     RolesSchema.find({ id }, (err, doc) => {
-      if (err || !doc) {
-        res.status(500).send({ status: 'server-error', msg: 'Could not find the role to delete in database', err })
-      }
+
+      if (err) { res.status(500).send({ status: 'server-error', msg: 'Could not connect to database', err }) }
+      else if (!doc) { res.status(404).send({ status: 'not-found', msg: `The role you wanted to delete does not exist` }) }
 
       // If the role exists, delete it
       else {
@@ -113,9 +113,8 @@ const handleDeleteCodetypeById = (req, res) => {
 
     // Check if the role exists in database
     CodetypeSchema.findOne({ id }, (err, doc) => {
-      if (err || !doc) {
-        res.status(500).send({ status: 'server-error', msg: 'Could not find the codetype to delete in database', err })
-      }
+      if (err) { res.status(500).send({ status: 'server-error', msg: 'Could not connect to database', err }) }
+      else if (!doc) { res.status(404).send({ status: 'not-found', msg: `The codetype you wanted to delete does not exist` }) }
 
       // If the role exists, delete it
       else {
@@ -175,10 +174,8 @@ const handleDeleteCodelanguageById = (req, res) => {
 
     // Check if the role exists in database
     CodelanguageSchema.findOne({ id }, (err, doc) => {
-      console.log(doc);
-      if (err || !doc) {
-        res.status(500).send({ status: 'server-error', msg: 'Could not find the Codelanguage to delete in database', err })
-      }
+      if (err) { res.status(500).send({ status: 'server-error', msg: 'Could not connect to database', err }) }
+      else if (!doc) { res.status(404).send({ status: 'not-found', msg: `The code language you wanted to delete does not exist` }) }
 
       // If the role exists, delete it
       else {
@@ -283,7 +280,7 @@ const handleDeleteUserRole = (req, res) => {
           if (err) { res.status(500).send({ status: 'server-error', msg: 'Could not connect to database', err }) }
 
           // If document doesn't exist, send error message
-          else if (!doc) { res.status(404).send({ status: 'not-found', msg: `The user you wanted to update does not exist: ID>${id}: ${username}` }) }
+          else if (!doc) { res.status(404).send({ status: 'not-found', msg: `The user you wanted to update does not exist: ID>${id}` }) }
           // If user exists, update it with the passed params
           else {
             const user = doc;
