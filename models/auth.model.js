@@ -1,8 +1,9 @@
-const mongoose = require("mongoose");
+const SqlConnector = require("../lib/connector");
 
-const AuthSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true, unique: true },
-});
+class AuthModel extends SqlConnector {
+  constructor(host, user, password, database) {
+      super(host, user, password, database)
+  }
+}
 
-module.exports = mongoose.model('AuthSchema', AuthSchema);
+module.exports = AuthModel
