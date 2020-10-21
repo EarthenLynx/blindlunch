@@ -1,25 +1,20 @@
 const crs = require("crypto-random-string");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
 const AuthModel = require("../models/auth.model");
 
 const handleSignup = async (req, res) => {
-  const host = process.env.DB_HOST; 
-  const user = process.env.DB_USERNAME; 
-  const password = process.env.DB_USER_PASSWORD
-  const database = process.env.DB_DATABASE_NAME
-  const Connector = new AuthModel(host, user, password, database)
-  Connector.connect()
+  const { DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME } = await process.env;
+  const Connector = new AuthModel(DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME);
+  const userDetails = req.body;
+
+  const connection = await Connector.connect()
+  const response = await Connector.registerNewUser(connection, userDetails)
+  Connector.close(connection);
+  res.send(response);
 }
 
-handleSignup()
-
-
-
-
-
-
+module.exports = { handleSignup }
 
 
 

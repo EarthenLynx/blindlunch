@@ -61,3 +61,20 @@
 {"level":"info","message":"IP ::1 sent http status 404 error: User - password combination not found. | Sun Sep 27 2020 10:27:56 GMT+0200"}
 {"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/authenticate | Sun Sep 27 2020 10:29:27 GMT+0200"}
 {"level":"info","message":"IP ::1 sent http status 404 error: User - password combination not found. | Sun Sep 27 2020 10:29:27 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - GET - Login attempt at /api/auth/register | Wed Oct 21 2020 21:25:23 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:25:32 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:27:11 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:28:02 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:29:02 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:29:29 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:30:45 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:32:04 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:34:51 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:35:12 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:47:01 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:47:17 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:48:05 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:48:13 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:50:06 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:52:12 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:53:06 GMT+0200"}

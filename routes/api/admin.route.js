@@ -1,6 +1,5 @@
 // Import needed modules
 const express = require("express");
-const {} = require("../../controller/admin.controller");
 
 const { verifyUser } = require("../../middleware/verifyUser");
 
