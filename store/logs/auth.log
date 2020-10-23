@@ -78,3 +78,4 @@
 {"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:50:06 GMT+0200"}
 {"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:52:12 GMT+0200"}
 {"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:53:06 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 18:56:43 GMT+0200"}
