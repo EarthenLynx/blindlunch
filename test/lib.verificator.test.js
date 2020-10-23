@@ -1,4 +1,4 @@
-const Verificator = require("../lib/verificator");
+const Verificator = require("../lib/class/verificator");
 
 test('Check if strings are properly recognized', () => {
   const v = new Verificator("test")

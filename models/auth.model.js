@@ -1,4 +1,4 @@
-const SqlConnector = require("../lib/connector");
+const SqlConnector = require("../lib/class/connector");
 const bcrypt = require("bcrypt");
 const crs = require("crypto-random-string");
 
@@ -9,7 +9,6 @@ class AuthModel extends SqlConnector {
 
   async registerNewUser(connection, userDetails) {
     const {username, password, email, company, department, prefOtherDep} = await userDetails
-    console.log(userDetails);
 
     const id = crs({length: 15})
     const passwordHash = await bcrypt.hash(password, 12);
