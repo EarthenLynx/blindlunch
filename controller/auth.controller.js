@@ -4,13 +4,13 @@ const moment = require("moment");
 const AuthModel = require("../models/auth.model");
 
 const handleSignup = async (req, res) => {
-  const { DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME } = await process.env;
-  const Connector = new AuthModel(DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME);
+  const { DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME } = process.env;
+  const Auth = new AuthModel(DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME);
   const userDetails = req.body;
 
-  const connection = await Connector.connect()
-  const response = await Connector.registerNewUser(connection, userDetails)
-  Connector.close(connection);
+  const connection = await Auth.connect()
+  const response = await Auth.registerNewUser(connection, userDetails)
+  Auth.close(connection);
   res.send(response);
 }
 
