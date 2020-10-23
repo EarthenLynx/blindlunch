@@ -79,3 +79,17 @@
 {"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:52:12 GMT+0200"}
 {"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Wed Oct 21 2020 21:53:06 GMT+0200"}
 {"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 18:56:43 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 18:58:52 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 18:59:49 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 19:07:26 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 19:22:04 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 19:22:34 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 19:22:50 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 19:23:48 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 19:24:42 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 19:25:34 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 19:25:47 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 19:27:14 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 19:30:36 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 19:30:43 GMT+0200"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Fri Oct 23 2020 23:46:44 GMT+0200"}
