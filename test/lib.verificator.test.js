@@ -1,86 +1,73 @@
 const Verificator = require("../lib/class/verificator");
 
+const { testStrings, testArrays, testObjects, testEmptyVars, testBools, testBoolsTruthy, testBoolsFalsey, testMails } = require("./inputs");
+
 test('Check if strings are properly recognized', () => {
   const v = new Verificator("test")
 
-  // Check for several strings
-  expect(v.string("My string").check()).toBeTruthy();
-  expect(v.string("my_otherstring").check()).toBeTruthy();
+  // Check for string
+  testStrings.forEach(el => expect(v.string(el).check()).toBeTruthy());
+  testMails.forEach(el => expect(v.string(el).check()).toBeTruthy())
 
   // Counterchecks
-  expect(v.string(123).check()).toBeFalsy();
-  expect(v.string(true).check()).toBeFalsy();
-  expect(v.string(new Object({ value: "String" })).check()).toBeFalsy();
-  expect(v.string([]).check()).toBeFalsy();
+  testArrays.forEach(el => expect(v.string(el).check()).toBeFalsy());
+  testObjects.forEach(el => expect(v.string(el).check()).toBeFalsy());
 })
 
 test('Check if arrays are properly recognized', () => {
   const v = new Verificator("test")
 
-  // Check for several strings
-  expect(v.array(['one', 2, true]).check()).toBeTruthy();
-  expect(v.array([]).check()).toBeTruthy();
-  expect(v.array(new Array()).check()).toBeTruthy();
+  // Check for array
+  testArrays.forEach(el => expect(v.array(el).check()).toBeTruthy());
 
   // Counterchecks
-  expect(v.array(123).check()).toBeFalsy();
-  expect(v.array(true).check()).toBeFalsy();
-  expect(v.array(new String("String")).check()).toBeFalsy();
-  expect(v.array({}).check()).toBeFalsy();
+  testStrings.forEach(el => expect(v.array(el).check()).toBeFalsy());
+  testMails.forEach(el => expect(v.array(el).check()).toBeFalsy())
 })
 
 test('Check if objects are properly recognized', () => {
   const v = new Verificator("test")
 
-  // Check for several strings
-  expect(v.object({ that: 'mine', foo: 'bar' }).check()).toBeTruthy();
-  expect(v.object({ that: 'mine', foo: 123 }).check()).toBeTruthy();
-  expect(v.object(new Object({ that: 'mine', foo: 123 })).check()).toBeTruthy();
+  // Check for object
+  testObjects.forEach(el => expect(v.object(el).check()).toBeTruthy());
 
   // Counterchecks
-  expect(v.object(123).check()).toBeFalsy();
-  expect(v.object(true).check()).toBeFalsy();
-  expect(v.object(new String("String")).check()).toBeFalsy();
-  expect(v.object([]).check()).toBeFalsy();
+  testStrings.forEach(el => expect(v.object(el).check()).toBeFalsy());
+  testBoolsFalsey.forEach(el => expect(v.object(el).check()).toBeFalsy())
 });
 
 test('Check if booleans are properly recognized', () => {
   const v = new Verificator("test")
 
-  // Check for several strings
-  expect(v.boolean(true).check()).toBeTruthy();
-  expect(v.boolean(false).check()).toBeTruthy();
-
-  // Counterchecks
-  expect(v.boolean(123).check()).toBeFalsy();
-  expect(v.boolean('This is a string').check()).toBeFalsy();
-  expect(v.boolean(new String("String")).check()).toBeFalsy();
-  expect(v.boolean([]).check()).toBeFalsy();
+  // Check for booleans
+  testBools.forEach(el => expect(v.boolean(el)).toBeTruthy());
 });
 
 test('Check if email verification is working', () => {
   const v = new Verificator("test")
 
   // Check for several emails
-  expect(v.email("t.quante@gmx.net").check()).toBeTruthy();
-  expect(v.email("ms@outlook.de").check()).toBeTruthy();
-  expect(v.email("my_mail@gmail.net").check()).toBeTruthy();
+  testMails.forEach(el => expect(v.email(el).check()).toBeTruthy());
 
   // Counterchecks
-  expect(v.email("No Email").check()).toBeFalsy();
-  expect(v.email(123).check()).toBeFalsy();
-  expect(v.email(true).check()).toBeFalsy();
-  expect(v.email({ email: "t.quante@gmx.net" }).check()).toBeFalsy();
+  testObjects.forEach(el => expect(v.email(el).check()).toBeFalsy());
+  testBoolsFalsey.forEach(el => expect(v.email(el).check()).toBeFalsy())
 });
+
+test('Check if empty value for strings and arrays is working', () => {
+  const v = new Verificator('test');
+
+  expect(v.filled('').check()).toBeFalsy();
+})
 
 test('Check if empty value check for arrays and objects is working', () => {
   const v = new Verificator("test")
 
   // Check for several empty types
-  expect(v.empty({}).check()).toBeTruthy();
-  expect(v.empty([]).check()).toBeTruthy();
+  testEmptyVars.forEach(el => expect(v.empty(el).check()).toBeTruthy());
 
   // Counterchecks
-  expect(v.empty({ one: "two" }).check()).toBeFalsy();
-  expect(v.empty(["one", 2, true]).check()).toBeFalsy();
+  testStrings.forEach(el => expect(v.empty(el).check()).toBeFalsy());
+  testArrays.forEach(el => expect(v.empty(el).check()).toBeFalsy());
+  testObjects.forEach(el => expect(v.empty(el).check()).toBeFalsy());
 })
