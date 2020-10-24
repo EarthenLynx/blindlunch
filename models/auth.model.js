@@ -35,24 +35,37 @@ class AuthModel extends SqlConnector {
    */
   async registerNewUser(connection, userDetails) {
     const v = new Verificator(process.env.NODE_ENV);
-    const { username, password, email, company, department, prefOtherDep } = await userDetails
+    const { username, password, email, companyName, departmentName, prefOtherDep } = await userDetails
 
     const validEmail = v.email(email).check();
-    const validInput = v.filled(username).filled(password).filled(email).filled(company).filled(department).filled(prefOtherDep).check();
+    const validInput = v.filled(username).filled(password).filled(email).filled(companyName).filled(departmentName).filled(prefOtherDep).check();
 
-    if (!validEmail) throw new TypeError('Please enter a valid email adress')
-    if (!validInput) throw new TypeError('Please fill out all mandatory information')
-    const id = crs({ length: 15 })
-    const passwordHash = await bcrypt.hash(password, 12);
-
-
-    const queryUserAuth = `INSERT INTO USER_AUTH (id, username, password) VALUES ('${id}', '${username}', '${passwordHash}');`
-    const queryUserLogin = `INSERT INTO USER_LOGIN (id, username, email, company, department, prefOtherDep) VALUES ('${id}', '${username}', '${email}', '${company}', '${department}', '${prefOtherDep}');`;
-
-    const authRes = await this.post(connection, queryUserAuth);
-    const loginRes = await this.post(connection, queryUserLogin)
-
-    return { authRes, loginRes }
+    if (!validEmail) {
+      throw new TypeError('Please enter a valid email adress')
+    } else if (!validInput) {
+      throw new TypeError('Please fill out all mandatory information')
+    } else {
+      const id = crs({ length: 15 })
+      const queryUserLogin = `INSERT INTO USER_LOGIN (id, username, email, companyName, departmentName, prefOtherDep) VALUES ('${id}', '${username}', '${email}', '${companyName}', '${departmentName}', '${prefOtherDep}');`;
+      const loginRes = await this.post(connection, queryUserLogin);
+      // Check if there's a duplicate entry or another err before posting 
+      if (this.hasErrAt(loginRes)) {
+        throw new Error(loginRes)
+      }
+      // If there is no error with the loginResponse, continue
+      else {
+        const passwordHash = await bcrypt.hash(password, 12);
+        const queryUserAuth = `INSERT INTO USER_AUTH (id, username, password) VALUES ('${id}', '${username}', '${passwordHash}');`
+        const authRes = await this.post(connection, queryUserAuth);
+        if (this.hasErrAt(authRes)) {
+          throw new Error(authRes)
+        }
+        // If no errors happened during the queries, finish the function
+        else {
+          return { authRes, loginRes }
+        }
+      }
+    }
   }
 }
 

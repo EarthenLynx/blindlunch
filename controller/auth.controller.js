@@ -9,9 +9,10 @@ const handleSignup = async (req, res) => {
   const userDetails = req.body;
 
   const connection = await Auth.connect()
-  const response = await Auth.registerNewUser(connection, userDetails).catch(err => console.log(err))
-  Auth.close(connection);
-  res.send(response);
+  const response = await Auth.registerNewUser(connection, userDetails).catch(err => err);
+
+  res.send(response)
+  Auth.close(connection)
 }
 
 module.exports = { handleSignup }
