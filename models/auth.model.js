@@ -33,9 +33,9 @@ class AuthModel extends SqlConnector {
    * @param {Object} connection The SQL Connection object created by the connect method
    * @param {Object} userDetails  The User object that is to be passed as a payload
    */
-  async registerNewUser(connection, userDetails) {
+  async signup(connection, userDetails) {
     const v = new Verificator(process.env.NODE_ENV);
-    const { username, password, email, companyName, departmentName, prefOtherDep } = await userDetails
+    const { username, password, email, companyName, departmentName, prefOtherDep } = await userDetails;
 
     // Do basic validation
     const validEmail = v.email(email).check();
@@ -56,6 +56,7 @@ class AuthModel extends SqlConnector {
       // If there is no error with the loginResponse, continue
       else {
         const passwordHash = await bcrypt.hash(password, 12);
+        console.log(passwordHash);
         const queryUserAuth = `INSERT INTO USER_AUTH (id, username, password) VALUES ('${id}', '${username}', '${passwordHash}');`
         const authRes = await this.post(connection, queryUserAuth).catch(err => err);
         if (this.hasErrAt(authRes)) {
@@ -68,6 +69,46 @@ class AuthModel extends SqlConnector {
       }
     }
   }
+
+  async authenticate(connection, userDetails) {
+    const v = new Verificator(process.env.NODE_ENV);
+    const { username, password } = await userDetails;
+
+    const validInput = v.filled(username).filled(password).check();
+    if (!validInput) throw new TypeError('Please fill out your user credentials');
+
+    // If input is non empty, search for the user in the auth db and send back its id, if available
+    else {
+      const queryUserLogin = `SELECT * FROM USER_AUTH WHERE username='${username}';`
+      const authRes = await this.post(connection, queryUserLogin).catch(err => err);
+      if (this.hasErrAt(authRes)) {
+        return authRes;
+      }
+
+      // Check if user exists
+      else {
+        const exists = v.filled(authRes.results).check();
+        if (!exists) {
+          return { exists }
+        }
+        // If user does exist, continue
+        else {
+          const user = authRes.results[0]
+          const pw = user;
+          const authenticated = await bcrypt.compare(password, user.password)
+
+          if (!authenticated) {
+            return { exists, authenticated }
+          } else {
+            const id = authRes.id;
+            return { exists, authenticated, id }
+          }
+        }
+      }
+    }
+  }
 }
+// $2b$12$/Kk362D2/fUqLtpG3WNBMuGh7aqEwh66csoyiP
+// $2b$12$/Kk362D2/fUqLtpG3WNBMuGh7aqEwh66csoyiPFsgefB1NRmmtPLK
 
 module.exports = AuthModel
