@@ -1,11 +1,5 @@
 const Nodekeeper = require("../lib/class/nodekeeper");
 
-test('Check if nodekeerp creates a correct random ID', () => {
-  const n = new Nodekeeper()
-
-  expect(n.create(12)).toBeTruthy();
-})
-
 test('Check if process ID gets properly saved in the process env', () => {
   const n = new Nodekeeper();
 

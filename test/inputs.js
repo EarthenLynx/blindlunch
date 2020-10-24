@@ -14,8 +14,9 @@ const testObjects = [
 ];
 const testEmptyVars = ["", [], {}]
 const testBools = [true, false];
+const testTinyInts = [0, 1];
 const testBoolsTruthy = [true, "true", 123];
 const testBoolsFalsey = [false, undefined, null]
 const testMails = [];
 
-module.exports = { testStrings, testArrays, testObjects, testEmptyVars, testBools, testBoolsTruthy, testBoolsFalsey, testMails }
+module.exports = { testStrings, testArrays, testObjects, testEmptyVars, testBools, testTinyInts, testBoolsTruthy, testBoolsFalsey, testMails }

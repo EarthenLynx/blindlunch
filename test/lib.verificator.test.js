@@ -1,6 +1,6 @@
 const Verificator = require("../lib/class/verificator");
 
-const { testStrings, testArrays, testObjects, testEmptyVars, testBools, testBoolsTruthy, testBoolsFalsey, testMails } = require("./inputs");
+const { testStrings, testArrays, testObjects, testEmptyVars, testBools, testTinyInts, testBoolsFalsey, testMails, } = require("./inputs");
 
 test('Check if strings are properly recognized', () => {
   const v = new Verificator("test")
@@ -42,6 +42,17 @@ test('Check if booleans are properly recognized', () => {
   // Check for booleans
   testBools.forEach(el => expect(v.boolean(el)).toBeTruthy());
 });
+
+test('Check if tinyint are properly recognized', () => {
+  const v = new Verificator("test")
+
+  testTinyInts.forEach(el => expect(v.tinyInt(el)).toBeTruthy());
+
+  // Counterchecks
+  testStrings.forEach(el => expect(v.object(el).check()).toBeFalsy());
+  testObjects.forEach(el => expect(v.email(el).check()).toBeFalsy());
+})
+// TODO: Check if tinyint are properly recognized
 
 test('Check if email verification is working', () => {
   const v = new Verificator("test")
