@@ -4,12 +4,14 @@ const jwt = require("jsonwebtoken");
 const AuthModel = require("../models/auth.model");
 const Nodekeeper = require("../lib/class/nodekeeper");
 
+// Initialize the Auth Model
+const { DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME } = process.env;
+const Auth = new AuthModel(DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME);
+
 // Include util functions
 const { getAuthtokenFrom, verifyAudience } = require("../lib/util/jwt");
 
 const handleSignup = async (req, res) => {
-  const { DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME } = process.env;
-  const Auth = new AuthModel(DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME);
   const userDetails = req.body;
 
   const connection = await Auth.connect()
@@ -23,8 +25,6 @@ const handleSignup = async (req, res) => {
 }
 
 const handleAuthenticate = async (req, res) => {
-  const { DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME } = process.env;
-  const Auth = new AuthModel(DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME);
   const userDetails = req.body;
 
   const connection = await Auth.connect();
@@ -57,9 +57,6 @@ const handleAuthenticate = async (req, res) => {
 }
 
 const handleLogin = async (req, res) => {
-  const { DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME } = process.env;
-  const Auth = new AuthModel(DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME);
-
   const connection = await Auth.connect();
 
   const incomingToken = getAuthtokenFrom(req);
