@@ -17,7 +17,9 @@ const Verificator = require("../lib/class/verificator");
  * @method close(connection) Accepts a connection object and closes the connection
  * @method get(connection,query) Executes a SELECT query on the specified query
  * @method post(connection,query) Executes a UPDATE query on the specified query
- * @method registerNewUser(connection,userDetails) Creates a new user in auth and login database
+ * @method signup(connection,userDetails) Creates a new user in auth and login database
+ * @method authenticate(connection,userDetail) Creates a jwt that can be used for login path
+ * @method login(connection,userid) Verifies user integrity and gives out a user jwt.
  */
 
 class AuthModel extends SqlConnector {
@@ -28,7 +30,7 @@ class AuthModel extends SqlConnector {
   /**
    * @public
    * 
-   * @function
+   * @method
    * 
    * @param {Object} connection The SQL Connection object created by the connect method
    * @param {Object} userDetails  The User object that is to be passed as a payload
@@ -70,6 +72,14 @@ class AuthModel extends SqlConnector {
     }
   }
 
+  /**
+   * @public
+   * 
+   * @method
+   * 
+   * @param {Object} connection The SQL Connection object created by the connect method
+   * @param {Object} userDetails  The User object that is to be passed as a payload
+   */
   async authenticate(connection, userDetails) {
     const v = new Verificator(process.env.NODE_ENV);
     const { username, password } = await userDetails;
@@ -79,8 +89,8 @@ class AuthModel extends SqlConnector {
 
     // If input is non empty, search for the user in the auth db and send back its id, if available
     else {
-      const queryUserLogin = `SELECT * FROM USER_AUTH WHERE username='${username}';`
-      const authRes = await this.post(connection, queryUserLogin).catch(err => err);
+      const queryUserAuthentication = `SELECT * FROM USER_AUTH WHERE username='${username}';`
+      const authRes = await this.get(connection, queryUserAuthentication).catch(err => err);
       if (this.hasErrAt(authRes)) {
         return authRes;
       }
@@ -94,18 +104,38 @@ class AuthModel extends SqlConnector {
         // If user does exist, continue
         else {
           const user = authRes.results[0]
-          const pw = user;
           const authenticated = await bcrypt.compare(password, user.password)
 
           if (!authenticated) {
             return { exists, authenticated }
           } else {
-            const id = authRes.id;
+            const id = authRes.results[0].id;
+            console.log(id);
             return { exists, authenticated, id }
           }
         }
       }
     }
+  }
+
+  /**
+   * @public
+   * 
+   * @method
+   * 
+   * @param {Object} connection The SQL Connection object created by the connect method
+   * @param {String} userid The user's id that has been passed into the jwt by the authenticate() function
+   */
+
+  async login(connection, userid) {
+    const queryUserLogin = `SELECT * FROM USER_LOGIN WHERE ID='${userid}'`;
+    const authRes = await this.get(connection, queryUserLogin).catch(err => err);
+    if (this.hasErrAt(authRes)) {
+      return authRes;
+    }
+
+    const user = await authRes.results[0];
+    return user
   }
 }
 

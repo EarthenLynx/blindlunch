@@ -4,6 +4,9 @@ const jwt = require("jsonwebtoken");
 const AuthModel = require("../models/auth.model");
 const Nodekeeper = require("../lib/class/nodekeeper");
 
+// Include util functions
+const { getAuthtokenFrom, verifyAudience } = require("../lib/util/jwt");
+
 const handleSignup = async (req, res) => {
   const { DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME } = process.env;
   const Auth = new AuthModel(DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME);
@@ -19,7 +22,7 @@ const handleSignup = async (req, res) => {
   Auth.close(connection)
 }
 
-handleAuthenticate = async (req, res) => {
+const handleAuthenticate = async (req, res) => {
   const { DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME } = process.env;
   const Auth = new AuthModel(DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME);
   const userDetails = req.body;
@@ -35,22 +38,78 @@ handleAuthenticate = async (req, res) => {
   // If user was found, sign a json webtoken and allow the user to login
   else {
     const n = new Nodekeeper();
-    const pair = n.set(20)
+    const pair = await n.set(20)
     const secret = process.env.SECRET;
+    const id = user.id;
     const options = {
       audience: req.ip,
       issuer: process.env.HOST,
       expiresIn: '1m'
     }
 
-    const token = jwt.sign(pair, secret, options);
+    const payload = { id, pair }
 
-    res.status(200).send({ status: 'success', msg: 'User found. You may now login', token })
+    const token = jwt.sign(payload, secret, options);
+
+    res.cookie(process.env.AUTH_TOKENNAME, token).status(200).send({ status: 'success', msg: 'User found. You may now login', token })
   }
   await Auth.close(connection)
 }
 
-module.exports = { handleSignup, handleAuthenticate }
+const handleLogin = async (req, res) => {
+  const { DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME } = process.env;
+  const Auth = new AuthModel(DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME);
+
+  const connection = await Auth.connect();
+
+  const incomingToken = getAuthtokenFrom(req);
+  const secret = process.env.SECRET;
+  let payload = {};
+
+  // Start to verify the users integrity
+  // 1. Verify the token
+  try {
+    payload = jwt.verify(incomingToken, secret)
+  } catch (err) {
+    await Auth.close(connection)
+    return res.status(403).send({ status: 'forbidden', msg: "Your token is either expired or invalid. Try logging in again" });
+  }
+
+  // 2. Compare the jwt variables with those in the process
+  const n = new Nodekeeper();
+  const { key, value } = payload.pair;
+
+  try {
+    await n.compare(key, value)
+  } catch (err) {
+    await Auth.close(connection)
+    return res.status(403).send({ status: 'forbidden', msg: "Your integrity could not be verified" })
+  }
+  n.destroy(key);
+
+  // 3. Make sure the jwt comes from the same IP adress to which it was issued
+  const sameIp = verifyAudience(req, payload)
+  if(!sameIp) {
+    return res.status(403).send({ status: 'forbidden', msg: "Your IP could not be verified" })
+  }
+
+  // If integrity can be verified, continue
+  const { id } = payload;
+  const user = await Auth.login(connection, id);
+  const options = {
+    audience: req.ip,
+    issuer: process.env.HOST,
+    expiresIn: '1m'
+  }
+
+  const token = jwt.sign({...user}, secret, options)
+
+  res.cookie(process.env.AUTH_TOKENNAME, token).status(200).send({ status: 'success', msg: 'You are now logged in', token })
+
+  await Auth.close(connection)
+}
+
+module.exports = { handleSignup, handleAuthenticate, handleLogin }
 
 
 
