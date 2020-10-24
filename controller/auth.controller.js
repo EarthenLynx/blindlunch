@@ -64,12 +64,12 @@ const handleLogin = async (req, res) => {
 
   const incomingToken = getAuthtokenFrom(req);
   const secret = process.env.SECRET;
-  let payload = {};
+  let incomingPayload = {};
 
   // Start to verify the users integrity
   // 1. Verify the token
   try {
-    payload = jwt.verify(incomingToken, secret)
+    incomingPayload = jwt.verify(incomingToken, secret)
   } catch (err) {
     await Auth.close(connection)
     return res.status(403).send({ status: 'forbidden', msg: "Your token is either expired or invalid. Try logging in again" });
@@ -77,7 +77,7 @@ const handleLogin = async (req, res) => {
 
   // 2. Compare the jwt variables with those in the process
   const n = new Nodekeeper();
-  const { key, value } = payload.pair;
+  const { key, value } = incomingPayload.pair;
 
   try {
     await n.compare(key, value)
@@ -88,14 +88,16 @@ const handleLogin = async (req, res) => {
   n.destroy(key);
 
   // 3. Make sure the jwt comes from the same IP adress to which it was issued
-  const sameIp = verifyAudience(req, payload)
+  const sameIp = verifyAudience(req, incomingPayload)
   if(!sameIp) {
     return res.status(403).send({ status: 'forbidden', msg: "Your IP could not be verified" })
   }
 
   // If integrity can be verified, continue
-  const { id } = payload;
+  const { id } = incomingPayload;
   const user = await Auth.login(connection, id);
+  console.log(user);
+  // const {}
   const options = {
     audience: req.ip,
     issuer: process.env.HOST,
