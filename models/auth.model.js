@@ -58,7 +58,6 @@ class AuthModel extends SqlConnector {
       // If there is no error with the loginResponse, continue
       else {
         const passwordHash = await bcrypt.hash(password, 12);
-        console.log(passwordHash);
         const queryUserAuth = `INSERT INTO USER_AUTH (id, username, password) VALUES ('${id}', '${username}', '${passwordHash}');`
         const authRes = await this.post(connection, queryUserAuth).catch(err => err);
         if (this.hasErrAt(authRes)) {
@@ -110,7 +109,6 @@ class AuthModel extends SqlConnector {
             return { exists, authenticated }
           } else {
             const id = authRes.results[0].id;
-            console.log(id);
             return { exists, authenticated, id }
           }
         }
