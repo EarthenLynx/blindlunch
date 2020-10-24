@@ -10,8 +10,11 @@ const handleSignup = async (req, res) => {
 
   const connection = await Auth.connect()
   const response = await Auth.registerNewUser(connection, userDetails).catch(err => new Error(err));
-  console.log(response)
-  res.send(response)
+  if (Auth.hasErrAt(response)) {
+    await res.status(500).send({status: 'error', msg: `An error occured while trying to signup: ${response.sqlMessage}`})
+  } else {
+    await res.status(201).send({status: 'success', msg: 'User successfully created. You may now login'})
+  }
   Auth.close(connection)
 }
 
