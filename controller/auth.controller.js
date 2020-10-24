@@ -46,14 +46,11 @@ const handleAuthenticate = async (req, res) => {
       issuer: process.env.HOST,
       expiresIn: '1m'
     }
-
     const payload = { id, pair }
-
     const token = jwt.sign(payload, secret, options);
-
     res.cookie(process.env.AUTH_TOKENNAME, token).status(200).send({ status: 'success', msg: 'User found. You may now login', token })
   }
-  await Auth.close(connection)
+  return Auth.close(connection)
 }
 
 const handleLogin = async (req, res) => {
@@ -101,7 +98,7 @@ const handleLogin = async (req, res) => {
 
   const token = jwt.sign({...user}, secret, options)
   res.cookie(process.env.USER_TOKENNAME, token).status(200).send({ status: 'success', msg: 'You are now logged in', token })
-  await Auth.close(connection)
+  return Auth.close(connection)
 }
 
 module.exports = { handleSignup, handleAuthenticate, handleLogin }
