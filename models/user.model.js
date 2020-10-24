@@ -24,16 +24,37 @@ class UserModel extends SqlConnector {
     super(host, user, password, database)
   }
 
-  async getMyData(connection, payload) {
-    const { id } = payload;
+  async getMyData(connection, session) {
+    const { id } = session;
     const queryUserLogin = `SELECT id, username, email, companyName, departmentName, prefOtherDep, canBeFound FROM USER_LOGIN WHERE ID='${id}'`;
-    const authRes = await this.get(connection, queryUserLogin).catch(err => err);
-    if (this.hasErrAt(authRes)) {
-      return authRes;
+    const myDataRes = await this.get(connection, queryUserLogin).catch(err => err);
+    if (this.hasErrAt(myDataRes)) {
+      return myDataRes;
     }
 
-    const user = await authRes.results[0];
+    const user = await myDataRes.results[0];
     return user
+  }
+
+  async updateMyData(connection, session, payload) {
+    const v = new Verificator(process.env.NODE_ENV);
+    const { id } = session
+    const { username, email, companyName, departmentName, prefOtherDep, canBeFound } = payload
+
+    // Do basic validation
+    const validEmail = v.email(email).check();
+    const validInput = v.filled(username).filled(email).filled(companyName).filled(departmentName).tinyInt(prefOtherDep).tinyInt(canBeFound).check();
+
+    if (!validEmail) {
+      throw new TypeError('Please enter a valid email adress')
+    } else if (!validInput) {
+      throw new TypeError('Please fill out all mandatory information')
+    } else {
+      const queryUserData = `UPDATE USER_LOGIN SET username='${username}', email='${email}', companyName='${companyName}', departmentName='${departmentName}', prefOtherDep='${prefOtherDep}', canBeFound='${canBeFound}' WHERE id='${id}'`
+      const userDataRes = await this.post(connection, queryUserData).catch(err => err)
+
+      return userDataRes
+    }
   }
 }
 
