@@ -126,7 +126,7 @@ class AuthModel extends SqlConnector {
    */
 
   async login(connection, userid) {
-    const queryUserLogin = `SELECT * FROM USER_LOGIN WHERE ID='${userid}'`;
+    const queryUserLogin = `SELECT id, username, email, role, prefOtherDep, lastLoginAt FROM USER_LOGIN WHERE ID='${userid}'`;
     const authRes = await this.get(connection, queryUserLogin).catch(err => err);
     if (this.hasErrAt(authRes)) {
       return authRes;
