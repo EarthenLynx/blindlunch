@@ -108,7 +108,5 @@ class AuthModel extends SqlConnector {
     }
   }
 }
-// $2b$12$/Kk362D2/fUqLtpG3WNBMuGh7aqEwh66csoyiP
-// $2b$12$/Kk362D2/fUqLtpG3WNBMuGh7aqEwh66csoyiPFsgefB1NRmmtPLK
 
 module.exports = AuthModel

@@ -1,6 +1,6 @@
 // Import needed modules
 const express = require("express");
-const { handleSignup } = require("../../controller/auth.controller")
+const { handleSignup, handleAuthenticate } = require("../../controller/auth.controller")
 const { authLog } = require('../../middleware/logger');
 
 // Setup the router

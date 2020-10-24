@@ -1,7 +1,10 @@
 const crs = require("crypto-random-string");
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
+
+// Include classes to be used
 const AuthModel = require("../models/auth.model");
+const Nodekeeper = require("../lib/class/nodekeeper");
 
 const handleSignup = async (req, res) => {
   const { DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME } = process.env;
@@ -9,16 +12,47 @@ const handleSignup = async (req, res) => {
   const userDetails = req.body;
 
   const connection = await Auth.connect()
-  const response = await Auth.registerNewUser(connection, userDetails).catch(err => new Error(err));
+  const response = await Auth.signup(connection, userDetails).catch(err => new Error(err));
   if (Auth.hasErrAt(response)) {
-    await res.status(500).send({status: 'error', msg: `An error occured while trying to signup: ${response.sqlMessage}`})
+    await res.status(500).send({ status: 'error', msg: `An error occured while trying to signup: ${response.sqlMessage}` })
   } else {
-    await res.status(201).send({status: 'success', msg: 'User successfully created. You may now login'})
+    await res.status(201).send({ status: 'success', msg: 'User successfully created. You may now login' })
   }
   Auth.close(connection)
 }
 
-module.exports = { handleSignup }
+handleAuthenticate = async (req, res) => {
+  const { DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME } = process.env;
+  const Auth = new AuthModel(DB_HOST, DB_USERNAME, DB_USER_PASSWORD, DB_DATABASE_NAME);
+  const userDetails = req.body;
+
+  const connection = await Auth.connect();
+
+  // Look for a user in the database and return it if there is one
+  const user = await Auth.authenticate(connection, userDetails).catch(err => new Error(err));
+  if (!user.exists || !user.authenticated) {
+    res.status(404).send({ status: 'not-found', msg: 'User - password combination not found' })
+  }
+
+  // If user was found, sign a json webtoken and allow the user to login
+  else {
+    const n = new Nodekeeper();
+    const pair = n.set(20)
+    const secret = process.env.SECRET;
+    const options = {
+      audience: req.ip,
+      issuer: process.env.HOST,
+      expiresIn: '1m'
+    }
+
+    const token = jwt.sign(pair, secret, options);
+
+    res.status(200).send({ status: 'success', msg: 'User found. You may now login', token })
+  }
+  await Auth.close(connection)
+}
+
+module.exports = { handleSignup, handleAuthenticate }
 
 
 
