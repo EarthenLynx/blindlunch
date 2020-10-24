@@ -9,8 +9,8 @@ const handleSignup = async (req, res) => {
   const userDetails = req.body;
 
   const connection = await Auth.connect()
-  const response = await Auth.registerNewUser(connection, userDetails).catch(err => err);
-
+  const response = await Auth.registerNewUser(connection, userDetails).catch(err => new Error(err));
+  console.log(response)
   res.send(response)
   Auth.close(connection)
 }

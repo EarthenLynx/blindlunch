@@ -37,6 +37,7 @@ class AuthModel extends SqlConnector {
     const v = new Verificator(process.env.NODE_ENV);
     const { username, password, email, companyName, departmentName, prefOtherDep } = await userDetails
 
+    // Do basic validation
     const validEmail = v.email(email).check();
     const validInput = v.filled(username).filled(password).filled(email).filled(companyName).filled(departmentName).filled(prefOtherDep).check();
 
@@ -47,18 +48,18 @@ class AuthModel extends SqlConnector {
     } else {
       const id = crs({ length: 15 })
       const queryUserLogin = `INSERT INTO USER_LOGIN (id, username, email, companyName, departmentName, prefOtherDep) VALUES ('${id}', '${username}', '${email}', '${companyName}', '${departmentName}', '${prefOtherDep}');`;
-      const loginRes = await this.post(connection, queryUserLogin);
+      const loginRes = await this.post(connection, queryUserLogin).catch(err => err);
       // Check if there's a duplicate entry or another err before posting 
       if (this.hasErrAt(loginRes)) {
-        throw new Error(loginRes)
+        return loginRes
       }
       // If there is no error with the loginResponse, continue
       else {
         const passwordHash = await bcrypt.hash(password, 12);
         const queryUserAuth = `INSERT INTO USER_AUTH (id, username, password) VALUES ('${id}', '${username}', '${passwordHash}');`
-        const authRes = await this.post(connection, queryUserAuth);
+        const authRes = await this.post(connection, queryUserAuth).catch(err => err);
         if (this.hasErrAt(authRes)) {
-          throw new Error(authRes)
+          return loginRes
         }
         // If no errors happened during the queries, finish the function
         else {
