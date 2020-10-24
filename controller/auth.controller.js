@@ -1,6 +1,4 @@
-const crs = require("crypto-random-string");
 const jwt = require("jsonwebtoken");
-const moment = require("moment");
 
 // Include classes to be used
 const AuthModel = require("../models/auth.model");
