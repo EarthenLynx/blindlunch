@@ -12,9 +12,16 @@ const handleGetMyData = async (req, res, session) => {
 const handleUpdateMyData = async (req, res, session) => {
   const connection = await User.connect();
   const payload = req.body;
-  const user = await User.updateMyData(connection, session, payload).catch(err => err)
-  res.status(201).send({ status: 'success', msg: 'Your userdata have been updated' });
-  return User.close(connection)
+
+  try {
+    const success = await User.updateMyData(connection, session, payload)
+    res.status(201).send({ status: 'success', msg: 'Your userdata have been updated' });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ status: 'error', msg: err.message })
+  } finally {
+    return User.close(connection)
+  }
 }
 
 module.exports = { handleGetMyData, handleUpdateMyData }
