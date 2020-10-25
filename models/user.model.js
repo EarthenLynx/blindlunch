@@ -39,6 +39,8 @@ class UserModel extends SqlConnector {
     }
 
     const user = await myDataRes.results[0];
+    user.prefOtherDep = user.prefOtherDep === 1 ? true : false;
+    user.canBeFound = user.canBeFound === 1 ? true : false;
     return user
   }
 
@@ -63,7 +65,7 @@ class UserModel extends SqlConnector {
     } else if (!validInput) {
       throw new TypeError('Please fill out all mandatory information')
     } else {
-      const queryUserData = `UPDATE USER_LOGIN SET username='${username}', email='${email}', companyName='${companyName}', departmentName='${departmentName}', prefOtherDep='${prefOtherDep}', canBeFound='${canBeFound}' WHERE id='${id}'`
+      const queryUserData = `UPDATE USER_LOGIN SET username='${username}', email='${email}', companyName='${companyName}', departmentName='${departmentName}', prefOtherDep='${prefOtherDep ? 1 : 0}', canBeFound='${canBeFound ? 1 : 0}' WHERE id='${id}'`
       const userDataRes = await this.post(connection, queryUserData).catch(err => err)
 
       return userDataRes
