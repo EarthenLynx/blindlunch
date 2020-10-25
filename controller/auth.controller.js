@@ -15,6 +15,7 @@ const handleSignup = async (req, res) => {
   const userDetails = req.body;
 
   const connection = await Auth.connect()
+  // TODO: If one or more input variables cannot be verified, there will still be a success message
   const response = await Auth.signup(connection, userDetails).catch(err => new Error(err));
   if (Auth.hasErrAt(response)) {
     await res.status(500).send({ status: 'error', msg: `An error occured while trying to signup: ${response.sqlMessage}` })
