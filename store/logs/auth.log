@@ -78,3 +78,7 @@
 {"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/mypassword | Sun Oct 25 2020 12:05:06 GMT+0100"}
 {"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/mypassword | Sun Oct 25 2020 12:06:58 GMT+0100"}
 {"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/mypassword | Sun Oct 25 2020 12:07:06 GMT+0100"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Sun Oct 25 2020 12:34:42 GMT+0100"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/register | Sun Oct 25 2020 12:35:13 GMT+0100"}
+{"level":"info","message":"IP ::1 sent http - POST - Authentication attempt at /api/auth/authenticate | Sun Oct 25 2020 12:35:28 GMT+0100"}
+{"level":"info","message":"IP ::1 sent http - GET - Login attempt at /api/auth/login | Sun Oct 25 2020 12:35:32 GMT+0100"}

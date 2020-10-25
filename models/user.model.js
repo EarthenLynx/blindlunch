@@ -1,7 +1,5 @@
-const jwt = require("jsonwebtoken")
 const SqlConnector = require("../lib/class/connector");
 const Verificator = require("../lib/class/verificator");
-const { getUsertokenFrom } = require("../lib/util/jwt");
 
 /**
  * @public
@@ -24,6 +22,14 @@ class UserModel extends SqlConnector {
     super(host, user, password, database)
   }
 
+  /**
+   * @public
+   * 
+   * @function
+   * 
+   * @param {Object} connection The SQL Connection object created by the connect method
+   * @param {Object} session The jwt payload that contains the user's authentication data
+   */
   async getMyData(connection, session) {
     const { id } = session;
     const queryUserLogin = `SELECT id, username, email, companyName, departmentName, prefOtherDep, canBeFound FROM USER_LOGIN WHERE ID='${id}'`;
@@ -36,6 +42,13 @@ class UserModel extends SqlConnector {
     return user
   }
 
+  /**
+   * @function
+   * 
+   * @param {Object} connection The SQL Connection object created by the connect method
+   * @param {Object} session The jwt payload that contains the user's authentication data
+   * @param {Object} payload The input that's being used to CRUD user's data
+   */
   async updateMyData(connection, session, payload) {
     const v = new Verificator(process.env.NODE_ENV);
     const { id } = session

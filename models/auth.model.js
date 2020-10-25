@@ -20,6 +20,7 @@ const Verificator = require("../lib/class/verificator");
  * @method signup(connection,userDetails) Creates a new user in auth and login database
  * @method authenticate(connection,userDetail) Creates a jwt that can be used for login path
  * @method login(connection,userid) Verifies user integrity and gives out a user jwt.
+ * @method updateMyPassword(connection,session,payload) 
  */
 
 class AuthModel extends SqlConnector {
@@ -136,6 +137,15 @@ class AuthModel extends SqlConnector {
     return user
   }
 
+  /**
+   * @public
+   * 
+   * @function
+   * 
+   * @param {Object} connection The SQL Connection object created by the connect method
+   * @param {Object} session The jwt payload that contains the user's authentication data
+   * @param {Object} payload The input that's being used to CRUD user's data
+   */
   async updateMyPassword(connection, session, payload) {
     const v = new Verificator(process.env.NODE_ENV);
     const { id } = await session
