@@ -30,7 +30,7 @@ class AuthModel extends SqlConnector {
   /**
    * @public
    * 
-   * @method
+   * @function
    * 
    * @param {Object} connection The SQL Connection object created by the connect method
    * @param {Object} userDetails  The User object that is to be passed as a payload
@@ -74,7 +74,7 @@ class AuthModel extends SqlConnector {
   /**
    * @public
    * 
-   * @method
+   * @function
    * 
    * @param {Object} connection The SQL Connection object created by the connect method
    * @param {Object} userDetails  The User object that is to be passed as a payload
@@ -119,7 +119,7 @@ class AuthModel extends SqlConnector {
   /**
    * @public
    * 
-   * @method
+   * @function
    * 
    * @param {Object} connection The SQL Connection object created by the connect method
    * @param {String} userid The user's id that has been passed into the jwt by the authenticate() function
@@ -134,6 +134,50 @@ class AuthModel extends SqlConnector {
 
     const user = await authRes.results[0];
     return user
+  }
+
+  async updateMyPassword(connection, session, payload) {
+    const v = new Verificator(process.env.NODE_ENV);
+    const { id } = await session
+    const { oldpassword, newpassword } = await payload;
+
+    // Do basic validation
+    const validInput = v.filled(oldpassword).filled(newpassword).check();
+    const passwordsDistinct = v.notequal(oldpassword, newpassword).check();
+    if (!validInput) throw new TypeError('Please fill out your user credentials')
+    else if (!passwordsDistinct) throw new Error('Old password and new password must not be equal')
+
+    // If input is valid, continue
+    else {
+      const queryUserAuthentication = `SELECT password FROM USER_AUTH WHERE id='${id}';`
+      const authRes = await this.post(connection, queryUserAuthentication).catch(err => err);
+      if (this.hasErrAt(authRes)) {
+        return authRes;
+      }
+
+      // Check if passwords match
+      const oldPasswordHash = await authRes.results[0].password
+      const passwordsMatch = await bcrypt.compare(oldpassword, oldPasswordHash);
+
+      if (!passwordsMatch) {
+        throw new Error('Passwords do not match')
+      }
+      // If passwords match, create a new hash and save it to the db
+      else {
+        const newPasswordHash = await bcrypt.hash(newpassword, 12);
+        const queryUpdatePassword = `UPDATE USER_AUTH SET password='${newPasswordHash}' WHERE id='${id}'`
+        const authRes = await this.post(connection, queryUpdatePassword).catch(err => err);
+        if (this.hasErrAt(authRes)) {
+          return authRes;
+        }
+
+        return authRes;
+
+      }
+    }
+
+
+    // TODO: Hash the new pw and update the DB entry
   }
 }
 

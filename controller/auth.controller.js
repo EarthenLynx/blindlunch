@@ -83,7 +83,7 @@ const handleLogin = async (req, res) => {
 
   // 3. Make sure the jwt comes from the same IP adress to which it was issued
   const sameIp = verifyAudience(req, incomingPayload)
-  if(!sameIp) {
+  if (!sameIp) {
     return res.status(403).send({ status: 'forbidden', msg: "Your IP could not be verified" })
   }
 
@@ -96,9 +96,24 @@ const handleLogin = async (req, res) => {
     expiresIn: '4h'
   }
 
-  const token = jwt.sign({...user}, secret, options)
+  const token = jwt.sign({ ...user }, secret, options)
   res.cookie(process.env.USER_TOKENNAME, token).status(200).send({ status: 'success', msg: 'You are now logged in', token })
   return Auth.close(connection)
 }
 
-module.exports = { handleSignup, handleAuthenticate, handleLogin }
+const handleUpdateMyPassword = async (req, res, session) => {
+  const connection = await Auth.connect();
+  const payload = req.body;
+
+  try {
+    const success = await Auth.updateMyPassword(connection, session, payload)
+    res.status(201).send({ status: 'success', msg: 'Your password has been successfully updated' })
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ status: 'error', msg: err.message })
+  } finally {
+    return Auth.close(connection)
+  }
+}
+
+module.exports = { handleSignup, handleAuthenticate, handleLogin, handleUpdateMyPassword }
