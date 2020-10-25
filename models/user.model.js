@@ -15,6 +15,8 @@ const Verificator = require("../lib/class/verificator");
  * @method close(connection) Accepts a connection object and closes the connection
  * @method get(connection,query) Executes a SELECT query on the specified query
  * @method post(connection,query) Executes a UPDATE query on the specified query
+ * @method getMyData(connection,session) Gets the active user's data from his login table's entry
+ * @method updateMyData(connection,session,payload) Update the active user's data in the login table
  */
 
 class UserModel extends SqlConnector {
@@ -39,6 +41,20 @@ class UserModel extends SqlConnector {
     }
 
     const user = await myDataRes.results[0];
+    user.prefOtherDep = user.prefOtherDep === 1 ? true : false;
+    user.canBeFound = user.canBeFound === 1 ? true : false;
+    return user
+  }
+
+  async findUserById(connection, id) {
+    const queryUser = `SELECT id, username, email, companyName, departmentName, prefOtherDep, canBeFound FROM USER_LOGIN WHERE ID='${id}'`;
+    const userDataRes = await this.get(connection, queryUser).catch(err => err); 
+
+    if (this.hasErrAt(userDataRes)) {
+      return userDataRes;
+    }
+
+    const user = await userDataRes.results[0];
     user.prefOtherDep = user.prefOtherDep === 1 ? true : false;
     user.canBeFound = user.canBeFound === 1 ? true : false;
     return user
