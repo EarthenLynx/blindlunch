@@ -11,6 +11,7 @@ const log = require("./lib/util/clog");
 // Initialize the routes and the application
 const routerAuth = require('./routes/api/auth.route');
 const routerUser = require('./routes/api/user.route')
+const routerLunch = require("./routes/api/lunch.route")
 const app = express();
 
 // Initialize the middleware
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Configure the routes
 app.use('/api/auth', routerAuth);
 app.use('/api/user', routerUser);
+app.use('/api/lunch', routerLunch)
 
 // Configure the port. Uses standard node port, alternatively 3000 if not available
 app.set('port', process.env.PORT || 3000);

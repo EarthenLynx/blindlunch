@@ -12,7 +12,6 @@ const handleGetMyData = async (req, res, session) => {
     res.status(500).send({ status: 'error', msg: err.message })
   } finally {
     return User.close(connection)
-
   }
 
 }
