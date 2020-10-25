@@ -82,3 +82,27 @@ test('Check if empty value check for arrays and objects is working', () => {
   testArrays.forEach(el => expect(v.empty(el).check()).toBeFalsy());
   testObjects.forEach(el => expect(v.empty(el).check()).toBeFalsy());
 })
+
+test('Check if two equal values are strictly distinct', () => {
+  const v = new Verificator("test"); 
+
+  expect(v.equal('One', 'One').check()).toBeTruthy(); 
+  expect(v.equal(1, 1).check()).toBeTruthy();
+  expect(v.equal(true, true).check()).toBeTruthy();
+  
+  expect(v.equal(false, 'false').check()).toBeFalsy(); 
+  expect(v.equal(1, '1').check()).toBeFalsy(); 
+  expect(v.equal("one", 'One').check()).toBeFalsy(); 
+}); 
+
+test('Check if two non-equal values are recognized properly', () => {
+  const v = new Verificator("test"); 
+  
+  expect(v.notequal(false, 'false').check()).toBeTruthy(); 
+  expect(v.notequal(1, '1').check()).toBeTruthy(); 
+  expect(v.notequal("one", 'One').check()).toBeTruthy(); 
+
+  expect(v.notequal('One', 'One').check()).toBeFalsy(); 
+  expect(v.notequal(1, 1).check()).toBeFalsy();
+  expect(v.notequal(true, true).check()).toBeFalsy();
+})
